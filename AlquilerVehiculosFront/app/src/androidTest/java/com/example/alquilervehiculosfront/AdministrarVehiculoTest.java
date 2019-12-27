@@ -4,7 +4,6 @@ import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.alquilervehiculosfront.vistas.MainActivity;
@@ -19,12 +18,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-public class AdministrarVehiculosTest {
+public class AdministrarVehiculoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> menuActivityTestRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
-
 
     @Test
     public void registrar() throws InterruptedException {
@@ -73,7 +71,6 @@ public class AdministrarVehiculosTest {
 
         onView(withId(R.id.marca)).check(ViewAssertions.matches(withText("Audi")));
     }
-
 
     private void escribirEdit(int id, String texto) {
         ViewInteraction placa = onView(withId(id));
