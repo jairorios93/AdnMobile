@@ -99,7 +99,7 @@ public class AdministrarVehiculoFragment extends Fragment {
                         progressDialog.dismiss();
                         if (response.code() == StatusResponse.OK) {
                             limpiarCamposPantalla();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_registrado), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_registrado), Toast.LENGTH_LONG).show();
                         } else {
                             errorRespuesta(response.errorBody());
                         }
