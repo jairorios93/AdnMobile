@@ -36,8 +36,8 @@ pipeline {
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle clean'
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle build'
 	  
-	  sh 'gradle --b ./AlquilerVehiculosFront/build.gradle clean'
-	  sh 'gradle --b ./AlquilerVehiculosFront/build.gradle build'
+	  sh './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle clean'
+	  sh './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle build'
 	 }
 	}
 	
