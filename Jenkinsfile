@@ -16,18 +16,8 @@ pipeline {
     stage('Checkout'){ 
 	 steps{ 
 	  echo "------------>Checkout<------------" 
-	  checkout([ 
-	   $class: 'GitSCM',  
-	   branches: [[name: '*/master']],  
-	   doGenerateSubmoduleConfigurations: false,  
-	   extensions: [],  
-	   gitTool: 'Git_Centos',  
-	   submoduleCfg: [],  
-	   userRemoteConfigs: [[ 
-		credentialsId: 'GitHub_jairorios93',  
-		url:'https://github.com/jairorios93/AdnMobile.git'
-	   ]] 
-      ]) 
+	  checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 
+		credentialsId: 'GitHub_jairorios93', url:'https://github.com/jairorios93/AdnMobile.git']]]) 
      } 
     }     
     
@@ -36,8 +26,7 @@ pipeline {
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle clean'
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle build'
 	  
-	  sh './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle clean'
-	  sh './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle build'
+	  bat './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle clean build -x :app:test'
 	 }
 	}
 	
