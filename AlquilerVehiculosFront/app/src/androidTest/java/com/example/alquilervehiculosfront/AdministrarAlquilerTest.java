@@ -17,7 +17,7 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-//C:\Users\jairo.rios\Desktop\AdnMobileGit\AdnMobile\AlquilerVehiculosFront\local.properties
+
 public class AdministrarAlquilerTest {
 
     @Rule
