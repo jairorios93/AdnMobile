@@ -1,7 +1,9 @@
 package com.example.alquilervehiculosfront.vistas;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +56,7 @@ public class AdministrarAlquilerFragment extends Fragment {
     private Button alquilar;
     private Button devolver;
     private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialog;
 
     private Usuario usuario;
     private Vehiculo vehiculo;
@@ -100,9 +103,18 @@ public class AdministrarAlquilerFragment extends Fragment {
         });
 
         progressDialog = new ProgressDialog(getContext());
-
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+
+        alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setCancelable(true);
+        alertDialog.setPositiveButton(
+                getResources().getString(R.string.mensajes_generales_aceptar),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -122,28 +134,33 @@ public class AdministrarAlquilerFragment extends Fragment {
         buscarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
-                progressDialog.show();
+                if (cedula.getText().toString().equals("")) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_cedula_requerida), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else {
 
-                Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
+                    progressDialog.show();
 
-                servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
-                    @Override
-                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                        progressDialog.dismiss();
-                        if (response.body() != null) {
-                            usuario = response.body();
-                        } else {
+                    Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
+
+                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
+                        @Override
+                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                            progressDialog.dismiss();
+                            if (response.body() != null) {
+                                usuario = response.body();
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Usuario> call, Throwable t) {
+                            progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Usuario> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -152,29 +169,34 @@ public class AdministrarAlquilerFragment extends Fragment {
         buscarVehiculo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
-                progressDialog.show();
-
                 String placaVehiculo = placa.getText().toString();
 
-                servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
-                    @Override
-                    public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
-                        progressDialog.dismiss();
-                        if (response.body() != null) {
-                            vehiculo = response.body();
-                            valor.setText(String.valueOf(vehiculo.getPrecio()));
-                        } else {
+                if (placaVehiculo.equals("")) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_placa_requerida), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else {
+
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
+                    progressDialog.show();
+
+                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
+                        @Override
+                        public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
+                            progressDialog.dismiss();
+                            if (response.body() != null) {
+                                vehiculo = response.body();
+                                valor.setText(String.valueOf(vehiculo.getPrecio()));
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Vehiculo> call, Throwable t) {
+                            progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Vehiculo> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -183,33 +205,43 @@ public class AdministrarAlquilerFragment extends Fragment {
         alquilar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_alquilando));
-                progressDialog.show();
-
                 String fechaInicioAlquiler = fechaInicio.getText().toString();
                 String fechaFinAlquiler = fechaFin.getText().toString();
-                double valorAlquiler = Double.parseDouble(valor.getText().toString());
 
-                AlquilarVehiculo alquilarVehiculo = new AlquilarVehiculo(usuario, vehiculo, fechaInicioAlquiler, fechaFinAlquiler, true, valorAlquiler);
+                if (fechaInicioAlquiler.equals("") || fechaFinAlquiler.equals("")) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_campos_requeridos), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else if (usuario == null) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_usuario_requerido), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else if (vehiculo == null) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_vehiculo_requerido), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else {
 
-                servicioAlquiler.alquilar(alquilarVehiculo).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        progressDialog.dismiss();
-                        if (response.code() == StatusResponse.OK) {
-                            limpiarCamposPantalla();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_alquilado), Toast.LENGTH_SHORT).show();
-                        } else {
-                            errorRespuesta(response.errorBody());
+                    progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_alquilando));
+                    progressDialog.show();
+
+                    double valorAlquiler = Double.parseDouble(valor.getText().toString());
+
+                    AlquilarVehiculo alquilarVehiculo = new AlquilarVehiculo(usuario, vehiculo, fechaInicioAlquiler, fechaFinAlquiler, true, valorAlquiler);
+
+                    servicioAlquiler.alquilar(alquilarVehiculo).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == StatusResponse.OK) {
+                                limpiarCamposPantalla();
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_alquilado), Toast.LENGTH_SHORT).show();
+                            } else {
+                                errorRespuesta(response.errorBody());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_alquilando), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_alquilando), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -218,29 +250,34 @@ public class AdministrarAlquilerFragment extends Fragment {
         devolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_devolviendo));
-                progressDialog.show();
 
                 String placaVehiculo = placa.getText().toString();
 
-                servicioAlquiler.devolver(placaVehiculo).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        progressDialog.dismiss();
-                        if (response.code() == StatusResponse.OK) {
-                            limpiarCamposPantalla();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_devuelto), Toast.LENGTH_SHORT).show();
-                        } else {
-                            errorRespuesta(response.errorBody());
-                        }
-                    }
+                if (placaVehiculo.equals("")) {
+                    mostarAlert(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_placa_requerida), getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                } else {
+                    progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_devolviendo));
+                    progressDialog.show();
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_devolviendo), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    servicioAlquiler.devolver(placaVehiculo).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == StatusResponse.OK) {
+                                limpiarCamposPantalla();
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_devuelto), Toast.LENGTH_SHORT).show();
+                            } else {
+                                errorRespuesta(response.errorBody());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_devolviendo), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
@@ -325,5 +362,14 @@ public class AdministrarAlquilerFragment extends Fragment {
         fechaInicio.setText("");
         fechaFin.setText("");
         valor.setText("");
+        usuario = null;
+        vehiculo = null;
+    }
+
+    private void mostarAlert(String mensaje, String titulo) {
+        alertDialog.setMessage(mensaje);
+        alertDialog.setTitle(titulo);
+        alertDialog.create();
+        alertDialog.show();
     }
 }

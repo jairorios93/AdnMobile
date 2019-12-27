@@ -1,7 +1,9 @@
 package com.example.alquilervehiculosfront.vistas;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,7 @@ public class AdministrarUsuarioFragment extends Fragment {
     private Button guardar;
     private Button buscar;
     private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialog;
 
     private ServicioUsuario servicioUsuario;
 
@@ -74,9 +77,18 @@ public class AdministrarUsuarioFragment extends Fragment {
         });
 
         progressDialog = new ProgressDialog(getContext());
-
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+
+        alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setCancelable(true);
+        alertDialog.setPositiveButton(
+                getResources().getString(R.string.mensajes_generales_aceptar),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -92,35 +104,41 @@ public class AdministrarUsuarioFragment extends Fragment {
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_registrando));
-                progressDialog.show();
-
-                Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
                 String nombresUsuario = nombres.getText().toString();
                 String apellidosUsuario = apellidos.getText().toString();
                 String fechaNacimientoUsuario = fechaNacimiento.getText().toString();
 
+                if (cedula.getText().toString().equals("") || nombresUsuario.equals("") || apellidosUsuario.equals("") || fechaNacimientoUsuario.equals("")) {
+                    alertDialog.setMessage(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_campos_requeridos));
+                    alertDialog.setTitle(getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                    alertDialog.create();
+                    alertDialog.show();
+                } else {
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_registrando));
+                    progressDialog.show();
 
-                Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
+                    Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
+                    Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
 
-                servicioUsuario.registrar(usuario).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        progressDialog.dismiss();
-                        if (response.code() == StatusResponse.OK) {
-                            limpiarCamposPantalla();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
-                        } else {
-                            errorRespuesta(response.errorBody());
+                    servicioUsuario.registrar(usuario).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == StatusResponse.OK) {
+                                limpiarCamposPantalla();
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
+                            } else {
+                                errorRespuesta(response.errorBody());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        progressDialog.dismiss();
-                        t.printStackTrace();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            t.printStackTrace();
+                        }
+                    });
+                }
             }
         });
     }
@@ -129,30 +147,38 @@ public class AdministrarUsuarioFragment extends Fragment {
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
-                progressDialog.show();
+                if (cedula.getText().toString().equals("")) {
+                    alertDialog.setMessage(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_cedula_requerida));
+                    alertDialog.setTitle(getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                    alertDialog.create();
+                    alertDialog.show();
+                } else {
 
-                Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
+                    progressDialog.show();
 
-                servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
-                    @Override
-                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                        progressDialog.dismiss();
-                        if (response.body() != null) {
-                            nombres.setText(response.body().getNombres());
-                            apellidos.setText(response.body().getApellidos());
-                            fechaNacimiento.setText(response.body().getFechaNacimiento());
-                        } else {
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
+                    Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
+
+                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
+                        @Override
+                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                            progressDialog.dismiss();
+                            if (response.body() != null) {
+                                nombres.setText(response.body().getNombres());
+                                apellidos.setText(response.body().getApellidos());
+                                fechaNacimiento.setText(response.body().getFechaNacimiento());
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Usuario> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Usuario> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }

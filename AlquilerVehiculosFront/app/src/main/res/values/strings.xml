@@ -57,4 +57,12 @@
     <!-- General -->
     <string name="mensajes_generales_registrando">Registrando</string>
     <string name="mensajes_generales_buscando">Buscando</string>
+    <string name="mensajes_generales_aceptar">Aceptar</string>
+    <string name="mensajes_generales_alert_dialog_titulo_campos_requeridos">Campos requeridos</string>
+    <string name="mensajes_generales_alert_dialog_mensaje_campos_requeridos">Todos los campos son requeridos</string>
+    <string name="mensajes_generales_alert_dialog_mensaje_cedula_requerida">Ingrese una cedula</string>
+    <string name="mensajes_generales_alert_dialog_mensaje_placa_requerida">Ingrese una placa</string>
+    <string name="mensajes_generales_alert_dialog_mensaje_usuario_requerido">Busque un usuario</string>
+    <string name="mensajes_generales_alert_dialog_mensaje_vehiculo_requerido">Busque un vehiculo</string>
+
 </resources>

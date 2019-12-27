@@ -1,6 +1,8 @@
 package com.example.alquilervehiculosfront.vistas;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ public class AdministrarVehiculoFragment extends Fragment {
     private Button guardar;
     private Button buscar;
     private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialog;
 
     private ServicioVehiculo servicioVehiculo;
 
@@ -64,9 +67,18 @@ public class AdministrarVehiculoFragment extends Fragment {
         buscar = view.findViewById(R.id.buscar);
 
         progressDialog = new ProgressDialog(getContext());
-
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+
+        alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setCancelable(true);
+        alertDialog.setPositiveButton(
+                getResources().getString(R.string.mensajes_generales_aceptar),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -82,35 +94,44 @@ public class AdministrarVehiculoFragment extends Fragment {
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_registrando));
-                progressDialog.show();
-
                 String placaVehiculo = placa.getText().toString();
                 String modeloVehiculo = modelo.getText().toString();
                 String marcaVehiculo = marca.getText().toString();
                 String colorVehiculo = color.getText().toString();
-                double precioVehiculo = Double.parseDouble(precio.getText().toString());
 
-                Vehiculo vehiculo = new Vehiculo(placaVehiculo, modeloVehiculo, marcaVehiculo, colorVehiculo, precioVehiculo);
+                if (precio.getText().toString().equals("") || placaVehiculo.equals("") || modeloVehiculo.equals("") || marcaVehiculo.equals("") || colorVehiculo.equals("")) {
+                    alertDialog.setMessage(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_campos_requeridos));
+                    alertDialog.setTitle(getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                    alertDialog.create();
+                    alertDialog.show();
+                } else {
 
-                servicioVehiculo.registrar(vehiculo).enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        progressDialog.dismiss();
-                        if (response.code() == StatusResponse.OK) {
-                            limpiarCamposPantalla();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_registrado), Toast.LENGTH_LONG).show();
-                        } else {
-                            errorRespuesta(response.errorBody());
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_registrando));
+                    progressDialog.show();
+
+                    double precioVehiculo = Double.parseDouble(precio.getText().toString());
+
+                    Vehiculo vehiculo = new Vehiculo(placaVehiculo, modeloVehiculo, marcaVehiculo, colorVehiculo, precioVehiculo);
+
+                    servicioVehiculo.registrar(vehiculo).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == StatusResponse.OK) {
+                                limpiarCamposPantalla();
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_registrado), Toast.LENGTH_LONG).show();
+                            } else {
+                                errorRespuesta(response.errorBody());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        progressDialog.dismiss();
-                        t.printStackTrace();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            progressDialog.dismiss();
+                            t.printStackTrace();
+                        }
+                    });
+                }
             }
         });
     }
@@ -119,31 +140,39 @@ public class AdministrarVehiculoFragment extends Fragment {
         buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
-                progressDialog.show();
-
                 String placaVehiculo = placa.getText().toString();
 
-                servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
-                    @Override
-                    public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
-                        progressDialog.dismiss();
-                        if (response.body() != null) {
-                            modelo.setText(response.body().getModelo());
-                            marca.setText(response.body().getMarca());
-                            color.setText(response.body().getColor());
-                            precio.setText(String.valueOf(response.body().getPrecio()));
-                        } else {
+                if (placaVehiculo.equals("")) {
+                    alertDialog.setMessage(getResources().getString(R.string.mensajes_generales_alert_dialog_mensaje_placa_requerida));
+                    alertDialog.setTitle(getResources().getString(R.string.mensajes_generales_alert_dialog_titulo_campos_requeridos));
+                    alertDialog.create();
+                    alertDialog.show();
+                } else {
+
+                    progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
+                    progressDialog.show();
+
+                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
+                        @Override
+                        public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
+                            progressDialog.dismiss();
+                            if (response.body() != null) {
+                                modelo.setText(response.body().getModelo());
+                                marca.setText(response.body().getMarca());
+                                color.setText(response.body().getColor());
+                                precio.setText(String.valueOf(response.body().getPrecio()));
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Vehiculo> call, Throwable t) {
+                            progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Vehiculo> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
+                }
             }
         });
     }
