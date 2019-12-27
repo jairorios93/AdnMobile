@@ -26,7 +26,7 @@ pipeline {
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle clean'
 	  sh 'gradle --b ./AlquilerVehiculos/build.gradle build'
 	  
-	  bat './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle clean build -x :app:test'
+	  sh './AlquilerVehiculosFront/gradlew --b ./AlquilerVehiculosFront/build.gradle clean build -x :app:test'
 	 }
 	}
 	
