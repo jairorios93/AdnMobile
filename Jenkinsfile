@@ -1,6 +1,8 @@
 pipeline {   
 
- agent any
+ agent {
+        label 'Slave_AZDevOps'
+    }
   
  options { 
    buildDiscarder(logRotator(numToKeepStr: '3')) 
