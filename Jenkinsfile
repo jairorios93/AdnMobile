@@ -17,7 +17,7 @@ pipeline {
 	 steps{ 
 	  echo "------------>Checkout<------------" 
 	  checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 
-		credentialsId: 'GitHub_jairorios93', url:'https://github.com/jairorios93/AdnMobile.git']]]) 
+		'GitHub_jairorios93', url:'https://github.com/jairorios93/AdnMobile.git']]]) 
      } 
     }     
     
