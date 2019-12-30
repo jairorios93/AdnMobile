@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.modelo;
+package com.example.alquilervehiculosfront.dominio.modelo;
 
 public class Usuario {
 
@@ -9,9 +9,6 @@ public class Usuario {
     private String apellidos;
 
     private String fechaNacimiento;
-
-    public Usuario() {
-    }
 
     public Usuario(Long cedula, String nombres, String apellidos, String fechaNacimiento) {
         this.cedula = cedula;

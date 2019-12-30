@@ -18,9 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.modelo.AlquilarVehiculo;
-import com.example.alquilervehiculosfront.modelo.Usuario;
-import com.example.alquilervehiculosfront.modelo.Vehiculo;
+import com.example.alquilervehiculosfront.servicios.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.servicios.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
+import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
+import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 import com.example.alquilervehiculosfront.servicios.Endpoint;
 import com.example.alquilervehiculosfront.servicios.ServicioAlquiler;
 import com.example.alquilervehiculosfront.servicios.ServicioUsuario;
@@ -76,6 +78,24 @@ public class AdministrarAlquilerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        findElementViewById(view);
+        iniciarComponentes();
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        servicioUsuario = retrofit.create(ServicioUsuario.class);
+        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
+        servicioAlquiler = retrofit.create(ServicioAlquiler.class);
+
+        buscarUsuario();
+        buscarVehiculo();
+        alquilar();
+        devolver();
+    }
+
+    private void findElementViewById(View view) {
         cedula = view.findViewById(R.id.cedula);
         buscarUsuario = view.findViewById(R.id.buscarUsuario);
         placa = view.findViewById(R.id.placa);
@@ -85,7 +105,9 @@ public class AdministrarAlquilerFragment extends Fragment {
         valor = view.findViewById(R.id.valor);
         alquilar = view.findViewById(R.id.alquilar);
         devolver = view.findViewById(R.id.devolver);
+    }
 
+    private void iniciarComponentes() {
         fechaInicio.setFocusable(false);
         fechaFin.setFocusable(false);
 
@@ -115,19 +137,6 @@ public class AdministrarAlquilerFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
-        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
-        servicioAlquiler = retrofit.create(ServicioAlquiler.class);
-
-        buscarUsuario();
-        buscarVehiculo();
-        alquilar();
-        devolver();
     }
 
     private void buscarUsuario() {
@@ -143,19 +152,20 @@ public class AdministrarAlquilerFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
+                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
                         @Override
-                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                             progressDialog.dismiss();
                             if (response.body() != null) {
-                                usuario = response.body();
+                                usuario = new Usuario(response.body().getCedula(), response.body().getNombres(),
+                                        response.body().getApellidos(), response.body().getFechaNacimiento());
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<Usuario> call, Throwable t) {
+                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                             progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
                         }
@@ -178,12 +188,13 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
+                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<VehiculoDTO>() {
                         @Override
-                        public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
+                        public void onResponse(Call<VehiculoDTO> call, Response<VehiculoDTO> response) {
                             progressDialog.dismiss();
                             if (response.body() != null) {
-                                vehiculo = response.body();
+                                vehiculo = new Vehiculo(response.body().getPlaca(), response.body().getModelo(),
+                                        response.body().getMarca(), response.body().getColor(), response.body().getPrecio());
                                 valor.setText(String.valueOf(vehiculo.getPrecio()));
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
@@ -191,7 +202,7 @@ public class AdministrarAlquilerFragment extends Fragment {
                         }
 
                         @Override
-                        public void onFailure(Call<Vehiculo> call, Throwable t) {
+                        public void onFailure(Call<VehiculoDTO> call, Throwable t) {
                             progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
                         }

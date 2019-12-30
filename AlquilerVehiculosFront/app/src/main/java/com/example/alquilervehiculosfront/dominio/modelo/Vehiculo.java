@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.modelo;
+package com.example.alquilervehiculosfront.dominio.modelo;
 
 public class Vehiculo {
 
@@ -13,9 +13,6 @@ public class Vehiculo {
     private String color;
 
     private double precio;
-
-    public Vehiculo() {
-    }
 
     public Vehiculo(String placa, String modelo, String marca, String color, double precio) {
         this.placa = placa;

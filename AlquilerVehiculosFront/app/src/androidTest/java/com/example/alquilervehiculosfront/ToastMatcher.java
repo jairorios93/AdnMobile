@@ -18,7 +18,6 @@ public class ToastMatcher extends TypeSafeMatcher<Root> {
             IBinder appToken = root.getDecorView().getApplicationWindowToken();
             if (windowToken == appToken) {
                 return true;
-                //means this window isn't contained by any other windows.
             }
         }
         return false;

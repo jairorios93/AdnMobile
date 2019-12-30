@@ -18,7 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.modelo.Usuario;
+import com.example.alquilervehiculosfront.servicios.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.servicios.Endpoint;
 import com.example.alquilervehiculosfront.servicios.ServicioUsuario;
 import com.example.alquilervehiculosfront.servicios.StatusResponse;
@@ -61,13 +62,29 @@ public class AdministrarUsuarioFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        findElementViewById(view);
+        iniciarComponentes();
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        servicioUsuario = retrofit.create(ServicioUsuario.class);
+
+        registrar();
+        buscar();
+    }
+
+    private void findElementViewById(View view) {
         cedula = view.findViewById(R.id.cedula);
         nombres = view.findViewById(R.id.nombres);
         apellidos = view.findViewById(R.id.apellidos);
         fechaNacimiento = view.findViewById(R.id.fechaNacimiento);
         guardar = view.findViewById(R.id.guardar);
         buscar = view.findViewById(R.id.buscar);
+    }
 
+    private void iniciarComponentes() {
         fechaNacimiento.setFocusable(false);
         fechaNacimiento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,18 +106,9 @@ public class AdministrarUsuarioFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
-
-        guardar();
-        buscar();
     }
 
-    private void guardar() {
+    private void registrar() {
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,9 +167,9 @@ public class AdministrarUsuarioFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<Usuario>() {
+                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
                         @Override
-                        public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
                             progressDialog.dismiss();
                             if (response.body() != null) {
                                 nombres.setText(response.body().getNombres());
@@ -173,7 +181,7 @@ public class AdministrarUsuarioFragment extends Fragment {
                         }
 
                         @Override
-                        public void onFailure(Call<Usuario> call, Throwable t) {
+                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
                             progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
                         }

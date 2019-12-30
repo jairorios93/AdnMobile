@@ -1,6 +1,6 @@
 package com.example.alquilervehiculosfront.servicios;
 
-import com.example.alquilervehiculosfront.modelo.AlquilarVehiculo;
+import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

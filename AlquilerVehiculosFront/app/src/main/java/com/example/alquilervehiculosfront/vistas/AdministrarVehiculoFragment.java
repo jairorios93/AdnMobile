@@ -16,7 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.modelo.Vehiculo;
+import com.example.alquilervehiculosfront.servicios.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 import com.example.alquilervehiculosfront.servicios.Endpoint;
 import com.example.alquilervehiculosfront.servicios.ServicioVehiculo;
 import com.example.alquilervehiculosfront.servicios.StatusResponse;
@@ -58,6 +59,20 @@ public class AdministrarVehiculoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        findElementViewById(view);
+        iniciarComponentes();
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
+
+        registrar();
+        buscar();
+    }
+
+    private void findElementViewById(View view) {
         placa = view.findViewById(R.id.placa);
         modelo = view.findViewById(R.id.modelo);
         marca = view.findViewById(R.id.marca);
@@ -65,7 +80,9 @@ public class AdministrarVehiculoFragment extends Fragment {
         precio = view.findViewById(R.id.precio);
         guardar = view.findViewById(R.id.guardar);
         buscar = view.findViewById(R.id.buscar);
+    }
 
+    private void iniciarComponentes() {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
@@ -79,18 +96,9 @@ public class AdministrarVehiculoFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
-
-        guardar();
-        buscar();
     }
 
-    private void guardar() {
+    private void registrar() {
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,9 +160,9 @@ public class AdministrarVehiculoFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<Vehiculo>() {
+                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<VehiculoDTO>() {
                         @Override
-                        public void onResponse(Call<Vehiculo> call, Response<Vehiculo> response) {
+                        public void onResponse(Call<VehiculoDTO> call, Response<VehiculoDTO> response) {
                             progressDialog.dismiss();
                             if (response.body() != null) {
                                 modelo.setText(response.body().getModelo());
@@ -167,7 +175,7 @@ public class AdministrarVehiculoFragment extends Fragment {
                         }
 
                         @Override
-                        public void onFailure(Call<Vehiculo> call, Throwable t) {
+                        public void onFailure(Call<VehiculoDTO> call, Throwable t) {
                             progressDialog.dismiss();
                             Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
                         }

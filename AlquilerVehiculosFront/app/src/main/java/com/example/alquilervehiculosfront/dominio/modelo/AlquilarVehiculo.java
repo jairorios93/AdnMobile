@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.modelo;
+package com.example.alquilervehiculosfront.dominio.modelo;
 
 public class AlquilarVehiculo {
 

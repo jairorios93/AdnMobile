@@ -1,90 +1,80 @@
 package com.example.alquilervehiculosfront;
 
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.alquilervehiculosfront.vistas.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import org.junit.Before;
 
 public class AdministrarAlquilerTest {
+
+    private PageObject pageObject;
 
     @Rule
     public ActivityTestRule<MainActivity> menuActivityTestRule =
             new ActivityTestRule<>(MainActivity.class, true, true);
 
+    @Before
+    public void iniciarPageObject() {
+        pageObject = new PageObject();
+    }
+
     @Test
     public void alquilar() throws InterruptedException {
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        Thread.sleep(1000);
+        pageObject.abrirMenu();
+        pageObject.sleep(1);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_administrar_alquileres));
-        Thread.sleep(1000);
+        pageObject.navegarMenu(R.id.nav_view, R.id.nav_administrar_alquileres);
+        pageObject.sleep(1);
 
-        escribirEdit(R.id.cedula, "1094");
-        onView(withId(R.id.buscarUsuario)).perform(click());
-        Thread.sleep(3000);
+        pageObject.escribirEdit(R.id.cedula, "1094");
+        pageObject.clickBoton(R.id.buscarUsuario);
 
-        escribirEdit(R.id.placa, "ASD123");
-        onView(withId(R.id.buscarVehiculo)).perform(click());
-        Thread.sleep(3000);
+        pageObject.sleep(3);
 
-        escribirEdit(R.id.fechaInicio, "2019-12-27");
-        escribirEdit(R.id.fechaFin, "2019-12-27");
-        Thread.sleep(1000);
+        pageObject.escribirEdit(R.id.placa, "ASD123");
+        pageObject.clickBoton(R.id.buscarVehiculo);
+        pageObject.sleep(3);
 
-        onView(withId(R.id.alquilar)).perform(click());
+        pageObject.escribirEdit(R.id.fechaInicio, "2019-12-27");
+        pageObject.escribirEdit(R.id.fechaFin, "2019-12-27");
+        pageObject.sleep(1);
 
-        onView(withText(R.string.fragment_administrar_alquiler_alquilado)).inRoot(new ToastMatcher())
-                .check(ViewAssertions.matches(isDisplayed()));
+        pageObject.clickBoton(R.id.alquilar);
+
+        pageObject.matchToast(R.string.fragment_administrar_alquiler_alquilado);
     }
 
     @Test
     public void devolver() throws InterruptedException {
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        Thread.sleep(1000);
+        pageObject.abrirMenu();
+        pageObject.sleep(1);
 
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_administrar_alquileres));
-        Thread.sleep(1000);
+        pageObject.navegarMenu(R.id.nav_view, R.id.nav_administrar_alquileres);
+        pageObject.sleep(1);
 
-        escribirEdit(R.id.cedula, "1094");
-        onView(withId(R.id.buscarUsuario)).perform(click());
-        Thread.sleep(3000);
+        pageObject.escribirEdit(R.id.cedula, "1094");
+        pageObject.clickBoton(R.id.buscarUsuario);
+        pageObject.sleep(3);
 
-        escribirEdit(R.id.placa, "ASD124");
-        onView(withId(R.id.buscarVehiculo)).perform(click());
-        Thread.sleep(3000);
+        pageObject.escribirEdit(R.id.placa, "ASD124");
+        pageObject.clickBoton(R.id.buscarVehiculo);
+        pageObject.sleep(3);
 
-        escribirEdit(R.id.fechaInicio, "2019-12-27");
-        escribirEdit(R.id.fechaFin, "2019-12-27");
-        Thread.sleep(1000);
+        pageObject.escribirEdit(R.id.fechaInicio, "2019-12-27");
+        pageObject.escribirEdit(R.id.fechaFin, "2019-12-27");
+        pageObject.sleep(1);
 
-        onView(withId(R.id.alquilar)).perform(click());
-        Thread.sleep(8000);
+        pageObject.clickBoton(R.id.alquilar);
+        pageObject.sleep(8);
 
-        escribirEdit(R.id.placa, "ASD124");
-        Thread.sleep(1000);
+        pageObject.escribirEdit(R.id.placa, "ASD124");
+        pageObject.sleep(1);
 
-        onView(withId(R.id.devolver)).perform(click());
+        pageObject.clickBoton(R.id.devolver);
 
-        onView(withText(R.string.fragment_administrar_alquiler_devuelto)).inRoot(new ToastMatcher())
-                .check(ViewAssertions.matches(isDisplayed()));
+        pageObject.matchToast(R.string.fragment_administrar_alquiler_devuelto);
     }
-
-    private void escribirEdit(int id, String texto) {
-        ViewInteraction placa = onView(withId(id));
-        placa.perform(replaceText(texto));
-    }
-
 }

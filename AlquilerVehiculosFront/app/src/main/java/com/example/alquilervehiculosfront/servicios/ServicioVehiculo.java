@@ -1,6 +1,7 @@
 package com.example.alquilervehiculosfront.servicios;
 
-import com.example.alquilervehiculosfront.modelo.Vehiculo;
+import com.example.alquilervehiculosfront.servicios.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -14,5 +15,5 @@ public interface ServicioVehiculo {
     Call<Void> registrar(@Body Vehiculo vehiculo);
 
     @GET("vehiculo/{PLACA}")
-    Call<Vehiculo> buscar(@Path("PLACA") String placa);
+    Call<VehiculoDTO> buscar(@Path("PLACA") String placa);
 }
