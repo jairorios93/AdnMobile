@@ -25,7 +25,6 @@ import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuarioAp
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
 public class AdministrarUsuarioFragment extends Fragment {
 
     private EditText cedula;
