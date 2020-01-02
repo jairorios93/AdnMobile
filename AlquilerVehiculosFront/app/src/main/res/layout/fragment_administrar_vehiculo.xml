@@ -57,14 +57,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_vehiculo_guardar" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_vehiculo_guardar"
+                android:textColor="#FFF" />
 
             <Button
                 android:id="@+id/buscar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_vehiculo_buscar" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_vehiculo_buscar"
+                android:textColor="#FFF" />
 
         </LinearLayout>
     </LinearLayout>

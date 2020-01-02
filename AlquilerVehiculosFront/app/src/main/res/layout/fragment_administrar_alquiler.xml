@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_administrar_alquiler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_administrar_alquiler"
     tools:context=".vistas.AdministrarAlquilerFragment">
 
     <LinearLayout
@@ -30,7 +30,9 @@
                 android:id="@+id/buscarUsuario"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fragment_administrar_alquiler_buscar_usuario" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_alquiler_buscar_usuario"
+                android:textColor="#FFF" />
         </LinearLayout>
 
         <LinearLayout
@@ -50,7 +52,9 @@
                 android:id="@+id/buscarVehiculo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fragment_administrar_alquiler_buscar_vehiculo" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_alquiler_buscar_vehiculo"
+                android:textColor="#FFF" />
         </LinearLayout>
 
 
@@ -86,14 +90,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_alquiler_alquilar" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_alquiler_alquilar"
+                android:textColor="#FFF" />
 
             <Button
                 android:id="@+id/devolver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_alquiler_devolver" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_alquiler_devolver"
+                android:textColor="#FFF" />
 
         </LinearLayout>
     </LinearLayout>

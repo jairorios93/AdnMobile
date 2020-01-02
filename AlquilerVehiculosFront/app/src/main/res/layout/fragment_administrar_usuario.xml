@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_administrar_usuario"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_administrar_usuario"
     tools:context=".vistas.AdministrarUsuarioFragment">
 
     <LinearLayout
@@ -51,14 +51,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_usuario_guardar" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_usuario_guardar"
+                android:textColor="#FFF" />
 
             <Button
                 android:id="@+id/buscar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/fragment_administrar_usuario_buscar" />
+                android:background="@drawable/button_color"
+                android:text="@string/fragment_administrar_usuario_buscar"
+                android:textColor="#FFF" />
 
         </LinearLayout>
     </LinearLayout>
