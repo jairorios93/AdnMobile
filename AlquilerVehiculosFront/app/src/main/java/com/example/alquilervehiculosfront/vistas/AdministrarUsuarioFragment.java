@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioApplication;
+import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuarioApplication;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

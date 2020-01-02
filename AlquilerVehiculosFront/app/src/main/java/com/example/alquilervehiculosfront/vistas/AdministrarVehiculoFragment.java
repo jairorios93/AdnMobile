@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioVehiculoApplication;
+import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioVehiculoApplication;
 
 public class AdministrarVehiculoFragment extends Fragment {
 

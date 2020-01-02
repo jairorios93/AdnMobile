@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.aplicacion;
+package com.example.alquilervehiculosfront.aplicacion.helper;
 
 public class Endpoint {
 

@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.aplicacion.servicios;
+package com.example.alquilervehiculosfront.aplicacion.helper;
 
 public class StatusResponse {
 

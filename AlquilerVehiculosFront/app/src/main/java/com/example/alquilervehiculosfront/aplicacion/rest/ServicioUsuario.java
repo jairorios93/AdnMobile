@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.aplicacion.servicios;
+package com.example.alquilervehiculosfront.aplicacion.rest;
 
 import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;

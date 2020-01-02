@@ -1,14 +1,14 @@
-package com.example.alquilervehiculosfront.dominio.servicios;
+package com.example.alquilervehiculosfront.aplicacion.servicios;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.servicios.StatusResponse;
+import com.example.alquilervehiculosfront.aplicacion.helper.StatusResponse;
+import com.example.alquilervehiculosfront.aplicacion.rest.ServicioVehiculo;
 import com.example.alquilervehiculosfront.dominio.context.App;
 import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
-import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.aplicacion.Endpoint;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuario;
-import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.vistas.AdministrarUsuarioFragment;
+import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
+import com.example.alquilervehiculosfront.aplicacion.helper.Endpoint;
+import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.vistas.AdministrarVehiculoFragment;
 import com.example.alquilervehiculosfront.vistas.MainActivity;
 
 import org.json.JSONException;
@@ -23,24 +23,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ServicioUsuarioApplication {
+public class ServicioVehiculoApplication {
 
-    private ServicioUsuario servicioUsuario;
+    private ServicioVehiculo servicioVehiculo;
 
-    public ServicioUsuarioApplication() {
+    public ServicioVehiculoApplication() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
+        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
     }
 
-    public void registrar(Usuario usuario) {
-        servicioUsuario.registrar(usuario).enqueue(new Callback<Void>() {
+    public void registrar(Vehiculo vehiculo) {
+        servicioVehiculo.registrar(vehiculo).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                AdministrarUsuarioFragment fragment = (AdministrarUsuarioFragment) ((MainActivity)
-                        App.getContext()).getSupportFragmentManager().findFragmentByTag(FragmentTags.ADMINISTRAR_USUARIO_FRAGMENT);
+                AdministrarVehiculoFragment fragment = (AdministrarVehiculoFragment) ((MainActivity)
+                        App.getContext()).getSupportFragmentManager().findFragmentByTag(FragmentTags.ADMINISTRAR_VEHICULO_FRAGMENT);
                 if (fragment != null) {
                     fragment.dismissDialog();
                     if (response.code() == StatusResponse.OK) {
@@ -58,25 +58,24 @@ public class ServicioUsuarioApplication {
         });
     }
 
-    public void buscar(Long cedulaUsuario) {
-        servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
+    public void buscar(String placaVehiculo) {
+        servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<VehiculoDTO>() {
             @Override
-            public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
-                AdministrarUsuarioFragment fragment = (AdministrarUsuarioFragment) ((MainActivity)
-                        App.getContext()).getSupportFragmentManager().findFragmentByTag(FragmentTags.ADMINISTRAR_USUARIO_FRAGMENT);
+            public void onResponse(Call<VehiculoDTO> call, Response<VehiculoDTO> response) {
+                AdministrarVehiculoFragment fragment = (AdministrarVehiculoFragment) ((MainActivity)
+                        App.getContext()).getSupportFragmentManager().findFragmentByTag(FragmentTags.ADMINISTRAR_VEHICULO_FRAGMENT);
                 if (fragment != null) {
                     fragment.dismissDialog();
                     if (response.body() != null) {
                         fragment.resultadoBuscar(response.body());
                     } else {
-                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_usuario_no_encontrado));
+                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado));
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(Call<VehiculoDTO> call, Throwable t) {
             }
         });
     }

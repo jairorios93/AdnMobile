@@ -23,7 +23,7 @@ import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioAlquilerApplication;
+import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioAlquilerApplication;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

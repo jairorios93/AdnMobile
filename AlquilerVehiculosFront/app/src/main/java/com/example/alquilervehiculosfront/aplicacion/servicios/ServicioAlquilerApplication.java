@@ -1,16 +1,16 @@
-package com.example.alquilervehiculosfront.dominio.servicios;
+package com.example.alquilervehiculosfront.aplicacion.servicios;
 
 import com.example.alquilervehiculosfront.R;
+import com.example.alquilervehiculosfront.aplicacion.helper.StatusResponse;
 import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuario;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioVehiculo;
-import com.example.alquilervehiculosfront.aplicacion.servicios.StatusResponse;
+import com.example.alquilervehiculosfront.aplicacion.rest.ServicioAlquiler;
+import com.example.alquilervehiculosfront.aplicacion.rest.ServicioUsuario;
+import com.example.alquilervehiculosfront.aplicacion.rest.ServicioVehiculo;
 import com.example.alquilervehiculosfront.dominio.context.App;
 import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
-import com.example.alquilervehiculosfront.aplicacion.Endpoint;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioAlquiler;
+import com.example.alquilervehiculosfront.aplicacion.helper.Endpoint;
 import com.example.alquilervehiculosfront.vistas.AdministrarAlquilerFragment;
 import com.example.alquilervehiculosfront.vistas.MainActivity;
 
