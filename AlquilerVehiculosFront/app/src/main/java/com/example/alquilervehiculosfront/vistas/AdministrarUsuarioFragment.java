@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioApplication;
 
@@ -113,11 +112,7 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
                     Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
 
-                    try {
-                        servicioUsuario.registrar(usuario);
-                    } catch (ExcepcionNegocio e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    servicioUsuario.registrar(usuario);
                 }
             }
         });
@@ -153,11 +148,7 @@ public class AdministrarUsuarioFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    try {
-                        servicioUsuario.buscar(cedulaUsuario);
-                    } catch (ExcepcionNegocio e) {
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
+                    servicioUsuario.buscar(cedulaUsuario);
                 }
             }
         });
@@ -194,5 +185,9 @@ public class AdministrarUsuarioFragment extends Fragment {
         nombres.setText("");
         apellidos.setText("");
         fechaNacimiento.setText("");
+    }
+
+    public void mensajeError(String mensaje) {
+        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,8 +1,8 @@
 package com.example.alquilervehiculosfront.dominio.servicios;
 
+import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.servicios.StatusResponse;
 import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.aplicacion.Endpoint;
@@ -26,7 +26,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServicioUsuarioApplication {
 
     private ServicioUsuario servicioUsuario;
-    private static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
 
     public ServicioUsuarioApplication() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
@@ -47,7 +46,7 @@ public class ServicioUsuarioApplication {
                     if (response.code() == StatusResponse.OK) {
                         fragment.resultadoRegistrar();
                     } else {
-                        throw new ExcepcionNegocio(errorRespuesta(response.errorBody()));
+                        fragment.mensajeError(errorRespuesta(response.errorBody()));
                     }
                 }
             }
@@ -59,7 +58,7 @@ public class ServicioUsuarioApplication {
         });
     }
 
-    public void buscar(Long cedulaUsuario) throws ExcepcionNegocio {
+    public void buscar(Long cedulaUsuario) {
         servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
             @Override
             public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
@@ -70,14 +69,14 @@ public class ServicioUsuarioApplication {
                     if (response.body() != null) {
                         fragment.resultadoBuscar(response.body());
                     } else {
-                        throw new ExcepcionNegocio(USUARIO_NO_ENCONTRADO);
+                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_usuario_no_encontrado));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                throw new ExcepcionNegocio(USUARIO_NO_ENCONTRADO);
+                t.printStackTrace();
             }
         });
     }

@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
-import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 import com.example.alquilervehiculosfront.dominio.servicios.ServicioVehiculoApplication;
 
@@ -104,11 +103,7 @@ public class AdministrarVehiculoFragment extends Fragment {
 
                     Vehiculo vehiculo = new Vehiculo(placaVehiculo, modeloVehiculo, marcaVehiculo, colorVehiculo, precioVehiculo);
 
-                    try {
-                        servicioVehiculo.registrar(vehiculo);
-                    } catch (ExcepcionNegocio e) {
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    servicioVehiculo.registrar(vehiculo);
                 }
             }
         });
@@ -130,11 +125,7 @@ public class AdministrarVehiculoFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    try {
-                        servicioVehiculo.buscar(placaVehiculo);
-                    } catch (ExcepcionNegocio e) {
-                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
-                    }
+                    servicioVehiculo.buscar(placaVehiculo);
                 }
             }
         });
@@ -162,5 +153,9 @@ public class AdministrarVehiculoFragment extends Fragment {
         marca.setText(vehiculoDTO.getMarca());
         color.setText(vehiculoDTO.getColor());
         precio.setText(String.valueOf(vehiculoDTO.getPrecio()));
+    }
+
+    public void mensajeError(String mensaje) {
+        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 }

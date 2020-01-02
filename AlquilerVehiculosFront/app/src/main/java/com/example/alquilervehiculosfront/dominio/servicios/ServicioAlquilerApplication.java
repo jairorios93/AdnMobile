@@ -1,12 +1,12 @@
 package com.example.alquilervehiculosfront.dominio.servicios;
 
+import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
 import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuario;
 import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioVehiculo;
 import com.example.alquilervehiculosfront.aplicacion.servicios.StatusResponse;
 import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 import com.example.alquilervehiculosfront.aplicacion.Endpoint;
@@ -32,9 +32,6 @@ public class ServicioAlquilerApplication {
     private ServicioVehiculo servicioVehiculo;
     private ServicioAlquiler servicioAlquiler;
 
-    private static final String USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
-    private static final String VEHICULO_NO_ENCONTRADO = "Vehiculo no encontrado";
-
     public ServicioAlquilerApplication() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -56,7 +53,7 @@ public class ServicioAlquilerApplication {
                     if (response.code() == StatusResponse.OK) {
                         fragment.resultadoAlquilar();
                     } else {
-                        throw new ExcepcionNegocio(errorRespuesta(response.errorBody()));
+                        fragment.mensajeError(errorRespuesta(response.errorBody()));
                     }
                 }
             }
@@ -79,7 +76,7 @@ public class ServicioAlquilerApplication {
                     if (response.code() == StatusResponse.OK) {
                         fragment.resultadoDevolver();
                     } else {
-                        throw new ExcepcionNegocio(errorRespuesta(response.errorBody()));
+                        fragment.mensajeError(errorRespuesta(response.errorBody()));
                     }
                 }
             }
@@ -91,7 +88,7 @@ public class ServicioAlquilerApplication {
         });
     }
 
-    public void buscar(Long cedulaUsuario) throws ExcepcionNegocio {
+    public void buscar(Long cedulaUsuario) {
         servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
             @Override
             public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
@@ -102,14 +99,14 @@ public class ServicioAlquilerApplication {
                     if (response.body() != null) {
                         fragment.resultadoBuscar(response.body());
                     } else {
-                        throw new ExcepcionNegocio(USUARIO_NO_ENCONTRADO);
+                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_usuario_no_encontrado));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                throw new ExcepcionNegocio(USUARIO_NO_ENCONTRADO);
+                t.printStackTrace();
             }
         });
     }
@@ -125,14 +122,14 @@ public class ServicioAlquilerApplication {
                     if (response.body() != null) {
                         fragment.resultadoBuscar(response.body());
                     } else {
-                        throw new ExcepcionNegocio(VEHICULO_NO_ENCONTRADO);
+                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<VehiculoDTO> call, Throwable t) {
-                throw new ExcepcionNegocio(VEHICULO_NO_ENCONTRADO);
+                t.printStackTrace();
             }
         });
     }

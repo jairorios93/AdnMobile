@@ -11,10 +11,6 @@ public class App extends Application {
         return mContext;
     }
 
-    public static Context getmContext() {
-        return mContext;
-    }
-
     public static void setmContext(Context mContext) {
         App.mContext = mContext;
     }

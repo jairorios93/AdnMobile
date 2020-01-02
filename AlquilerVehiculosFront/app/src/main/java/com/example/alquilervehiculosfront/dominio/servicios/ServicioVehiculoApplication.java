@@ -1,8 +1,8 @@
 package com.example.alquilervehiculosfront.dominio.servicios;
 
+import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.aplicacion.servicios.StatusResponse;
 import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 import com.example.alquilervehiculosfront.aplicacion.Endpoint;
@@ -26,7 +26,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServicioVehiculoApplication {
 
     private ServicioVehiculo servicioVehiculo;
-    private static final String VEHICULO_NO_ENCONTRADO = "Vehiculo no encontrado";
 
     public ServicioVehiculoApplication() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
@@ -47,10 +46,11 @@ public class ServicioVehiculoApplication {
                     if (response.code() == StatusResponse.OK) {
                         fragment.resultadoRegistrar();
                     } else {
-                        throw new ExcepcionNegocio(errorRespuesta(response.errorBody()));
+                        fragment.mensajeError(errorRespuesta(response.errorBody()));
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 t.printStackTrace();
@@ -69,7 +69,7 @@ public class ServicioVehiculoApplication {
                     if (response.body() != null) {
                         fragment.resultadoBuscar(response.body());
                     } else {
-                        throw new ExcepcionNegocio(VEHICULO_NO_ENCONTRADO);
+                        fragment.mensajeError(App.getContext().getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado));
                     }
                 }
             }
