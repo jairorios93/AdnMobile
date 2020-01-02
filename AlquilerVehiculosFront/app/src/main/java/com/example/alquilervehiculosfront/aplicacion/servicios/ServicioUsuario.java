@@ -1,6 +1,6 @@
-package com.example.alquilervehiculosfront.servicios;
+package com.example.alquilervehiculosfront.aplicacion.servicios;
 
-import com.example.alquilervehiculosfront.servicios.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 
 import retrofit2.Call;

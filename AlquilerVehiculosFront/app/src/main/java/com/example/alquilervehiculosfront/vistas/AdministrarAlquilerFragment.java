@@ -18,33 +18,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.servicios.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.servicios.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.servicios.Endpoint;
-import com.example.alquilervehiculosfront.servicios.ServicioAlquiler;
-import com.example.alquilervehiculosfront.servicios.ServicioUsuario;
-import com.example.alquilervehiculosfront.servicios.ServicioVehiculo;
-import com.example.alquilervehiculosfront.servicios.StatusResponse;
+import com.example.alquilervehiculosfront.dominio.servicios.ServicioAlquilerApplication;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdministrarAlquilerFragment extends Fragment {
 
@@ -63,9 +49,7 @@ public class AdministrarAlquilerFragment extends Fragment {
     private Usuario usuario;
     private Vehiculo vehiculo;
 
-    private ServicioUsuario servicioUsuario;
-    private ServicioVehiculo servicioVehiculo;
-    private ServicioAlquiler servicioAlquiler;
+    private ServicioAlquilerApplication servicioAlquiler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,13 +65,7 @@ public class AdministrarAlquilerFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
-        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
-        servicioAlquiler = retrofit.create(ServicioAlquiler.class);
+        servicioAlquiler = new ServicioAlquilerApplication();
 
         buscarUsuario();
         buscarVehiculo();
@@ -152,24 +130,11 @@ public class AdministrarAlquilerFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
-                        @Override
-                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
-                            progressDialog.dismiss();
-                            if (response.body() != null) {
-                                usuario = new Usuario(response.body().getCedula(), response.body().getNombres(),
-                                        response.body().getApellidos(), response.body().getFechaNacimiento());
-                            } else {
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        servicioAlquiler.buscar(cedulaUsuario);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -188,25 +153,11 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    servicioVehiculo.buscar(placaVehiculo).enqueue(new Callback<VehiculoDTO>() {
-                        @Override
-                        public void onResponse(Call<VehiculoDTO> call, Response<VehiculoDTO> response) {
-                            progressDialog.dismiss();
-                            if (response.body() != null) {
-                                vehiculo = new Vehiculo(response.body().getPlaca(), response.body().getModelo(),
-                                        response.body().getMarca(), response.body().getColor(), response.body().getPrecio());
-                                valor.setText(String.valueOf(vehiculo.getPrecio()));
-                            } else {
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<VehiculoDTO> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        servicioAlquiler.buscar(placaVehiculo);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -231,27 +182,13 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.show();
 
                     double valorAlquiler = Double.parseDouble(valor.getText().toString());
-
                     AlquilarVehiculo alquilarVehiculo = new AlquilarVehiculo(usuario, vehiculo, fechaInicioAlquiler, fechaFinAlquiler, true, valorAlquiler);
 
-                    servicioAlquiler.alquilar(alquilarVehiculo).enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == StatusResponse.OK) {
-                                limpiarCamposPantalla();
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_alquilado), Toast.LENGTH_SHORT).show();
-                            } else {
-                                errorRespuesta(response.errorBody());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_alquilando), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        servicioAlquiler.alquilar(alquilarVehiculo);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -270,24 +207,11 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_devolviendo));
                     progressDialog.show();
 
-                    servicioAlquiler.devolver(placaVehiculo).enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == StatusResponse.OK) {
-                                limpiarCamposPantalla();
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_devuelto), Toast.LENGTH_SHORT).show();
-                            } else {
-                                errorRespuesta(response.errorBody());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_error_devolviendo), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        servicioAlquiler.devolver(placaVehiculo);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -358,15 +282,6 @@ public class AdministrarAlquilerFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void errorRespuesta(ResponseBody errorBody) {
-        try {
-            JSONObject jsonObject = new JSONObject(errorBody.string());
-            Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void limpiarCamposPantalla() {
         placa.setText("");
         cedula.setText("");
@@ -382,5 +297,30 @@ public class AdministrarAlquilerFragment extends Fragment {
         alertDialog.setTitle(titulo);
         alertDialog.create();
         alertDialog.show();
+    }
+
+    public void dismissDialog() {
+        progressDialog.dismiss();
+    }
+
+    public void resultadoBuscar(UsuarioDTO usuarioDTO) {
+        usuario = new Usuario(usuarioDTO.getCedula(), usuarioDTO.getNombres(),
+                usuarioDTO.getApellidos(), usuarioDTO.getFechaNacimiento());
+    }
+
+    public void resultadoBuscar(VehiculoDTO vehiculoDTO) {
+        vehiculo = new Vehiculo(vehiculoDTO.getPlaca(), vehiculoDTO.getModelo(),
+                vehiculoDTO.getMarca(), vehiculoDTO.getColor(), vehiculoDTO.getPrecio());
+        valor.setText(String.valueOf(vehiculo.getPrecio()));
+    }
+
+    public void resultadoAlquilar() {
+        limpiarCamposPantalla();
+        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_alquilado), Toast.LENGTH_SHORT).show();
+    }
+
+    public void resultadoDevolver() {
+        limpiarCamposPantalla();
+        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_devuelto), Toast.LENGTH_SHORT).show();
     }
 }

@@ -18,25 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.servicios.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.dominio.excepcion.ExcepcionNegocio;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.servicios.Endpoint;
-import com.example.alquilervehiculosfront.servicios.ServicioUsuario;
-import com.example.alquilervehiculosfront.servicios.StatusResponse;
+import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioApplication;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdministrarUsuarioFragment extends Fragment {
 
@@ -49,7 +38,7 @@ public class AdministrarUsuarioFragment extends Fragment {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
 
-    private ServicioUsuario servicioUsuario;
+    private ServicioUsuarioApplication servicioUsuario;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,11 +54,7 @@ public class AdministrarUsuarioFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
+        servicioUsuario = new ServicioUsuarioApplication();
 
         registrar();
         buscar();
@@ -128,27 +113,29 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
                     Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
 
-                    servicioUsuario.registrar(usuario).enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == StatusResponse.OK) {
-                                limpiarCamposPantalla();
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
-                            } else {
-                                errorRespuesta(response.errorBody());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            progressDialog.dismiss();
-                            t.printStackTrace();
-                        }
-                    });
+                    try {
+                        servicioUsuario.registrar(usuario);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
+    }
+
+    public void dismissDialog() {
+        progressDialog.dismiss();
+    }
+
+    public void resultadoRegistrar() {
+        limpiarCamposPantalla();
+        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
+    }
+
+    public void resultadoBuscar(UsuarioDTO usuarioDTO) {
+        nombres.setText(usuarioDTO.getNombres());
+        apellidos.setText(usuarioDTO.getApellidos());
+        fechaNacimiento.setText(usuarioDTO.getFechaNacimiento());
     }
 
     private void buscar() {
@@ -161,31 +148,16 @@ public class AdministrarUsuarioFragment extends Fragment {
                     alertDialog.create();
                     alertDialog.show();
                 } else {
-
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuario.buscar(cedulaUsuario).enqueue(new Callback<UsuarioDTO>() {
-                        @Override
-                        public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
-                            progressDialog.dismiss();
-                            if (response.body() != null) {
-                                nombres.setText(response.body().getNombres());
-                                apellidos.setText(response.body().getApellidos());
-                                fechaNacimiento.setText(response.body().getFechaNacimiento());
-                            } else {
-                                Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UsuarioDTO> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    try {
+                        servicioUsuario.buscar(cedulaUsuario);
+                    } catch (ExcepcionNegocio e) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_no_encontrado), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -216,14 +188,6 @@ public class AdministrarUsuarioFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void errorRespuesta(ResponseBody errorBody) {
-        try {
-            JSONObject jsonObject = new JSONObject(errorBody.string());
-            Toast.makeText(getContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void limpiarCamposPantalla() {
         cedula.setText("");

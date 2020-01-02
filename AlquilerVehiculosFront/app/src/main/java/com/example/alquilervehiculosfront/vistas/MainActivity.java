@@ -13,6 +13,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.alquilervehiculosfront.R;
+import com.example.alquilervehiculosfront.dominio.context.App;
+import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -21,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment(), "PrincipalFragment").commit();
         getSupportActionBar().setTitle(getResources().getString(R.string.menu_principal));
+
+        App.setmContext(this);
     }
 
     @Override
@@ -74,25 +77,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_menu_principal:
-                fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment(), FragmentTags.PRINCIPAL_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.menu_principal));
                 break;
 
             case R.id.nav_administrar_vehiculos:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarVehiculoFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarVehiculoFragment(), FragmentTags.ADMINISTRAR_VEHICULO_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_vehiculos));
                 break;
 
             case R.id.nav_administrar_usuarios:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarUsuarioFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarUsuarioFragment(), FragmentTags.ADMINISTRAR_USUARIO_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_usuarios));
                 break;
 
             case R.id.nav_administrar_alquileres:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarAlquilerFragment()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarAlquilerFragment(), FragmentTags.ADMINISTRAR_ALQUILER_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_alquileres));
                 break;
         }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

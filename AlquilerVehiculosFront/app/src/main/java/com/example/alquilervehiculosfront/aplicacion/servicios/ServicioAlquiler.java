@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.servicios;
+package com.example.alquilervehiculosfront.aplicacion.servicios;
 
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 
