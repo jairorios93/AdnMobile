@@ -16,11 +16,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.alquilervehiculosfront.R;
 import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioDominio;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicio;
+import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarUsuarioViewModel;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,7 +38,7 @@ public class AdministrarUsuarioFragment extends Fragment {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
 
-    private ServicioUsuarioDominio servicioUsuarioDominio;
+    private AdministrarUsuarioViewModel administrarUsuarioViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +54,7 @@ public class AdministrarUsuarioFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioUsuarioDominio = new ServicioUsuarioDominio();
+        administrarUsuarioViewModel = ViewModelProviders.of(this).get(AdministrarUsuarioViewModel.class);
 
         registrar();
         buscar();
@@ -109,19 +111,29 @@ public class AdministrarUsuarioFragment extends Fragment {
                     progressDialog.show();
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
-                    Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
 
-                    servicioUsuarioDominio.registrar(usuario);
+                    administrarUsuarioViewModel.registrar(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
+                    administrarUsuarioViewModel.getResult().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicio>() {
+                        @Override
+                        public void onChanged(RespuestaServicio response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoRegistrar();
+                            } else {
+                                mensajeError(response.getMensaje());
+                            }
+                        }
+                    });
                 }
             }
         });
     }
 
-    public void dismissDialog() {
+    private void dismissDialog() {
         progressDialog.dismiss();
     }
 
-    public void resultadoRegistrar() {
+    private void resultadoRegistrar() {
         limpiarCamposPantalla();
         Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
     }
@@ -147,7 +159,7 @@ public class AdministrarUsuarioFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuarioDominio.buscar(cedulaUsuario);
+                    // servicioUsuarioDominio.buscar(cedulaUsuario);
                 }
             }
         });
