@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.vistas;
+package com.example.alquilervehiculosfront.presentacion.fragmentos;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -4,7 +4,7 @@
     android:id="@+id/fragment_administrar_usuario"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".vistas.AdministrarUsuarioFragment">
+    tools:context=".presentacion.fragmentos.AdministrarUsuarioFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

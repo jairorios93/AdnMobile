@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.vistas;
+package com.example.alquilervehiculosfront.presentacion.fragmentos;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -18,9 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioUsuarioApplication;
+import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioDominio;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,7 +36,7 @@ public class AdministrarUsuarioFragment extends Fragment {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
 
-    private ServicioUsuarioApplication servicioUsuario;
+    private ServicioUsuarioDominio servicioUsuarioDominio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +52,7 @@ public class AdministrarUsuarioFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioUsuario = new ServicioUsuarioApplication();
+        servicioUsuarioDominio = new ServicioUsuarioDominio();
 
         registrar();
         buscar();
@@ -111,7 +111,7 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
                     Usuario usuario = new Usuario(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
 
-                    servicioUsuario.registrar(usuario);
+                    servicioUsuarioDominio.registrar(usuario);
                 }
             }
         });
@@ -147,7 +147,7 @@ public class AdministrarUsuarioFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioUsuario.buscar(cedulaUsuario);
+                    servicioUsuarioDominio.buscar(cedulaUsuario);
                 }
             }
         });

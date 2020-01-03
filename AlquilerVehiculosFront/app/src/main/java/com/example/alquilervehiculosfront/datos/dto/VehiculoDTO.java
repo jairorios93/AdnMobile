@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.aplicacion.dto;
+package com.example.alquilervehiculosfront.datos.dto;
 
 public class VehiculoDTO {
 

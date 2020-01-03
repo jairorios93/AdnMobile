@@ -2,7 +2,7 @@ package com.example.alquilervehiculosfront;
 
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.alquilervehiculosfront.vistas.MainActivity;
+import com.example.alquilervehiculosfront.presentacion.actividades.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

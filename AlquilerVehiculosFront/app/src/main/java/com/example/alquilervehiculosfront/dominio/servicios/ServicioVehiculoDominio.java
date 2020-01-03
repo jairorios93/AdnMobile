@@ -1,15 +1,15 @@
-package com.example.alquilervehiculosfront.aplicacion.servicios;
+package com.example.alquilervehiculosfront.dominio.servicios;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.helper.StatusResponse;
-import com.example.alquilervehiculosfront.aplicacion.rest.ServicioVehiculo;
-import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
+import com.example.alquilervehiculosfront.datos.restutil.StatusResponse;
+import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoVehiculoRest;
+import com.example.alquilervehiculosfront.presentacion.context.App;
+import com.example.alquilervehiculosfront.presentacion.fragmentosutil.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.aplicacion.helper.Endpoint;
-import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
-import com.example.alquilervehiculosfront.vistas.AdministrarVehiculoFragment;
-import com.example.alquilervehiculosfront.vistas.MainActivity;
+import com.example.alquilervehiculosfront.datos.restutil.Endpoint;
+import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarVehiculoFragment;
+import com.example.alquilervehiculosfront.presentacion.actividades.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,16 +23,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ServicioVehiculoApplication {
+public class ServicioVehiculoDominio {
 
-    private ServicioVehiculo servicioVehiculo;
+    private LlamadoVehiculoRest servicioVehiculo;
 
-    public ServicioVehiculoApplication() {
+    public ServicioVehiculoDominio() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
+        servicioVehiculo = retrofit.create(LlamadoVehiculoRest.class);
     }
 
     public void registrar(Vehiculo vehiculo) {

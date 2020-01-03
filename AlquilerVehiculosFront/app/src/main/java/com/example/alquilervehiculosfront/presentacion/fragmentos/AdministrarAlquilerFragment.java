@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.vistas;
+package com.example.alquilervehiculosfront.presentacion.fragmentos;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -18,12 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioAlquilerApplication;
+import com.example.alquilervehiculosfront.dominio.servicios.ServicioAlquilerDominio;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +48,7 @@ public class AdministrarAlquilerFragment extends Fragment {
     private Usuario usuario;
     private Vehiculo vehiculo;
 
-    private ServicioAlquilerApplication servicioAlquiler;
+    private ServicioAlquilerDominio servicioAlquiler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +64,7 @@ public class AdministrarAlquilerFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioAlquiler = new ServicioAlquilerApplication();
+        servicioAlquiler = new ServicioAlquilerDominio();
 
         buscarUsuario();
         buscarVehiculo();

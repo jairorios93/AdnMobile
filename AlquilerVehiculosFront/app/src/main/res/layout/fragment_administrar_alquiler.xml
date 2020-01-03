@@ -4,7 +4,7 @@
     android:id="@+id/fragment_administrar_alquiler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".vistas.AdministrarAlquilerFragment">
+    tools:context=".presentacion.fragmentos.AdministrarAlquilerFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

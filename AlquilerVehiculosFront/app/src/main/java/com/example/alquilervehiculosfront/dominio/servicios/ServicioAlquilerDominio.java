@@ -1,18 +1,18 @@
-package com.example.alquilervehiculosfront.aplicacion.servicios;
+package com.example.alquilervehiculosfront.dominio.servicios;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.helper.StatusResponse;
-import com.example.alquilervehiculosfront.aplicacion.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
-import com.example.alquilervehiculosfront.aplicacion.rest.ServicioAlquiler;
-import com.example.alquilervehiculosfront.aplicacion.rest.ServicioUsuario;
-import com.example.alquilervehiculosfront.aplicacion.rest.ServicioVehiculo;
-import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
+import com.example.alquilervehiculosfront.datos.restutil.StatusResponse;
+import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoAlquilerRest;
+import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoUsuarioRest;
+import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoVehiculoRest;
+import com.example.alquilervehiculosfront.presentacion.context.App;
+import com.example.alquilervehiculosfront.presentacion.fragmentosutil.FragmentTags;
 import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
-import com.example.alquilervehiculosfront.aplicacion.helper.Endpoint;
-import com.example.alquilervehiculosfront.vistas.AdministrarAlquilerFragment;
-import com.example.alquilervehiculosfront.vistas.MainActivity;
+import com.example.alquilervehiculosfront.datos.restutil.Endpoint;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarAlquilerFragment;
+import com.example.alquilervehiculosfront.presentacion.actividades.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,23 +26,30 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ServicioAlquilerApplication {
+public class ServicioAlquilerDominio {
 
-    private ServicioUsuario servicioUsuario;
-    private ServicioVehiculo servicioVehiculo;
-    private ServicioAlquiler servicioAlquiler;
+    private LlamadoUsuarioRest servicioUsuario;
+    private LlamadoVehiculoRest servicioVehiculo;
+    private LlamadoAlquilerRest servicioAlquiler;
 
-    public ServicioAlquilerApplication() {
+    public ServicioAlquilerDominio() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Endpoint.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        servicioUsuario = retrofit.create(ServicioUsuario.class);
-        servicioVehiculo = retrofit.create(ServicioVehiculo.class);
-        servicioAlquiler = retrofit.create(ServicioAlquiler.class);
+        servicioUsuario = retrofit.create(LlamadoUsuarioRest.class);
+        servicioVehiculo = retrofit.create(LlamadoVehiculoRest.class);
+        servicioAlquiler = retrofit.create(LlamadoAlquilerRest.class);
     }
 
     public void alquilar(AlquilarVehiculo alquilarVehiculo) {
+
+
+
+
+
+
+
         servicioAlquiler.alquilar(alquilarVehiculo).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

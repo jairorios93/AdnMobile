@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.vistas;
+package com.example.alquilervehiculosfront.presentacion.actividades;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,8 +13,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.dominio.context.App;
-import com.example.alquilervehiculosfront.dominio.helper.FragmentTags;
+import com.example.alquilervehiculosfront.presentacion.context.App;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarAlquilerFragment;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarUsuarioFragment;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarVehiculoFragment;
+import com.example.alquilervehiculosfront.presentacion.fragmentos.PrincipalFragment;
+import com.example.alquilervehiculosfront.presentacion.fragmentosutil.FragmentTags;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {

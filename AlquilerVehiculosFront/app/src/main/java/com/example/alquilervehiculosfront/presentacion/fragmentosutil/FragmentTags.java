@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.dominio.helper;
+package com.example.alquilervehiculosfront.presentacion.fragmentosutil;
 
 public class FragmentTags {
 

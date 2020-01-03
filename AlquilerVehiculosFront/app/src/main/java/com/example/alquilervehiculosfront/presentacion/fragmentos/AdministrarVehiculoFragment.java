@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.vistas;
+package com.example.alquilervehiculosfront.presentacion.fragmentos;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -16,9 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.aplicacion.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.aplicacion.servicios.ServicioVehiculoApplication;
+import com.example.alquilervehiculosfront.dominio.servicios.ServicioVehiculoDominio;
 
 public class AdministrarVehiculoFragment extends Fragment {
 
@@ -32,7 +32,7 @@ public class AdministrarVehiculoFragment extends Fragment {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
 
-    private ServicioVehiculoApplication servicioVehiculo;
+    private ServicioVehiculoDominio servicioVehiculo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +48,7 @@ public class AdministrarVehiculoFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioVehiculo = new ServicioVehiculoApplication();
+        servicioVehiculo = new ServicioVehiculoDominio();
 
         registrar();
         buscar();
