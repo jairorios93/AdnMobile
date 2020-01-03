@@ -37,7 +37,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public MutableLiveData<RespuestaServicio> registrar(Usuario usuario) {
-        MutableLiveData<RespuestaServicio> resultado = new MutableLiveData<>();
+        final MutableLiveData<RespuestaServicio> resultado = new MutableLiveData<>();
         llamadoUsuarioRest.registrar(usuario).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
