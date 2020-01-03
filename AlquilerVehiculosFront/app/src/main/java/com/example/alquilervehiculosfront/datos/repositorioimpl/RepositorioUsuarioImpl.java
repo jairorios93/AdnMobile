@@ -2,7 +2,9 @@ package com.example.alquilervehiculosfront.datos.repositorioimpl;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicio;
+import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
 import com.example.alquilervehiculosfront.datos.restutil.Endpoint;
 import com.example.alquilervehiculosfront.datos.restutil.StatusResponse;
 import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoUsuarioRest;
@@ -36,32 +38,50 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public MutableLiveData<RespuestaServicio> registrar(Usuario usuario) {
-        final MutableLiveData<RespuestaServicio> resultado = new MutableLiveData<>();
+    public MutableLiveData<RespuestaServicioPost> registrar(Usuario usuario) {
+        final MutableLiveData<RespuestaServicioPost> resultado = new MutableLiveData<>();
         llamadoUsuarioRest.registrar(usuario).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                RespuestaServicio respuestaServicio;
+                RespuestaServicioPost respuestaServicioPost;
                 if (response.code() == StatusResponse.OK) {
-                    respuestaServicio = new RespuestaServicio(USUARIO_REGISTRADO, response.code(), true);
+                    respuestaServicioPost = new RespuestaServicioPost(USUARIO_REGISTRADO, response.code(), true);
                 } else {
-                    respuestaServicio = new RespuestaServicio(errorRespuesta(response.errorBody()), response.code(), false);
+                    respuestaServicioPost = new RespuestaServicioPost(errorRespuesta(response.errorBody()), response.code(), false);
                 }
-                resultado.setValue(respuestaServicio);
+                resultado.setValue(respuestaServicioPost);
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                RespuestaServicio respuestaServicio = new RespuestaServicio(SERVIDOR_APAGADO, StatusResponse.SERVIDOR_APAGADO, false);
-                resultado.setValue(respuestaServicio);
+                RespuestaServicioPost respuestaServicioPost = new RespuestaServicioPost(SERVIDOR_APAGADO, StatusResponse.SERVIDOR_APAGADO, false);
+                resultado.setValue(respuestaServicioPost);
             }
         });
         return resultado;
     }
 
     @Override
-    public Usuario buscar(Long cedula) {
-        return null;
+    public MutableLiveData<RespuestaServicioGet> buscar(Long cedula) {
+        final MutableLiveData<RespuestaServicioGet> resultado = new MutableLiveData<>();
+        llamadoUsuarioRest.buscar(cedula).enqueue(new Callback<UsuarioDTO>() {
+            @Override
+            public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
+                if (response.body() != null) {
+                    Usuario usuario = new Usuario(response.body().getCedula(), response.body().getNombres(),
+                            response.body().getApellidos(), response.body().getFechaNacimiento());
+                    RespuestaServicioGet respuestaServicioGet = new RespuestaServicioGet(usuario, response.code(), true);
+                    resultado.setValue(respuestaServicioGet);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDTO> call, Throwable t) {
+                RespuestaServicioGet respuestaServicioGet = new RespuestaServicioGet(null, StatusResponse.ERROR, false);
+                resultado.setValue(respuestaServicioGet);
+            }
+        });
+        return resultado;
     }
 
     private String errorRespuesta(ResponseBody errorBody) {

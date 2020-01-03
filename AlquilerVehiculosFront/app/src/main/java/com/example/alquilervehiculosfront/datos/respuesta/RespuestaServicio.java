@@ -1,23 +1,13 @@
 package com.example.alquilervehiculosfront.datos.respuesta;
 
-public class RespuestaServicio {
+public abstract class RespuestaServicio {
 
-    private String mensaje;
     private int codigoEstado;
     private boolean estado;
 
-    public RespuestaServicio(String mensaje, int codigoEstado, boolean estado) {
-        this.mensaje = mensaje;
+    public RespuestaServicio(int codigoEstado, boolean estado) {
         this.codigoEstado = codigoEstado;
         this.estado = estado;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
     }
 
     public int getCodigoEstado() {

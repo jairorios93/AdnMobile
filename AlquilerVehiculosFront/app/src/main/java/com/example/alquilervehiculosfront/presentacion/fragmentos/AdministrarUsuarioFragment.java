@@ -20,8 +20,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicio;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
+import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarUsuarioViewModel;
 
 import java.util.Calendar;
@@ -113,9 +114,9 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
                     administrarUsuarioViewModel.registrar(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
-                    administrarUsuarioViewModel.getResult().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicio>() {
+                    administrarUsuarioViewModel.getResultPost().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioPost>() {
                         @Override
-                        public void onChanged(RespuestaServicio response) {
+                        public void onChanged(RespuestaServicioPost response) {
                             dismissDialog();
                             if (response.isEstado()) {
                                 resultadoRegistrar();
@@ -138,10 +139,10 @@ public class AdministrarUsuarioFragment extends Fragment {
         Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_usuario_registrado), Toast.LENGTH_SHORT).show();
     }
 
-    public void resultadoBuscar(UsuarioDTO usuarioDTO) {
-        nombres.setText(usuarioDTO.getNombres());
-        apellidos.setText(usuarioDTO.getApellidos());
-        fechaNacimiento.setText(usuarioDTO.getFechaNacimiento());
+    private void resultadoBuscar(Usuario usuario) {
+        nombres.setText(usuario.getNombres());
+        apellidos.setText(usuario.getApellidos());
+        fechaNacimiento.setText(usuario.getFechaNacimiento());
     }
 
     private void buscar() {
@@ -159,7 +160,19 @@ public class AdministrarUsuarioFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    // servicioUsuarioDominio.buscar(cedulaUsuario);
+                    administrarUsuarioViewModel.buscar(cedulaUsuario);
+
+                    administrarUsuarioViewModel.getResultGet().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioGet>() {
+                        @Override
+                        public void onChanged(RespuestaServicioGet response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoBuscar((Usuario) response.getObjeto());
+                            } else {
+                                mensajeError(getResources().getString(R.string.fragment_administrar_usuario_no_encontrado));
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -198,7 +211,7 @@ public class AdministrarUsuarioFragment extends Fragment {
         fechaNacimiento.setText("");
     }
 
-    public void mensajeError(String mensaje) {
+    private void mensajeError(String mensaje) {
         Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 }

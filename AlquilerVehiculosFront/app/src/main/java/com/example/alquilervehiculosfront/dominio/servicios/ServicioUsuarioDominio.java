@@ -3,7 +3,8 @@ package com.example.alquilervehiculosfront.dominio.servicios;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.alquilervehiculosfront.datos.repositorioimpl.RepositorioUsuarioImpl;
-import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicio;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioUsuario;
 
@@ -15,10 +16,11 @@ public class ServicioUsuarioDominio {
         repositorioUsuario = new RepositorioUsuarioImpl();
     }
 
-    public MutableLiveData<RespuestaServicio> registrar(Usuario usuario) {
+    public MutableLiveData<RespuestaServicioPost> registrar(Usuario usuario) {
         return repositorioUsuario.registrar(usuario);
     }
 
-    public void buscar(Long cedulaUsuario) {
+    public MutableLiveData<RespuestaServicioGet> buscar(Long cedulaUsuario) {
+        return repositorioUsuario.buscar(cedulaUsuario);
     }
 }
