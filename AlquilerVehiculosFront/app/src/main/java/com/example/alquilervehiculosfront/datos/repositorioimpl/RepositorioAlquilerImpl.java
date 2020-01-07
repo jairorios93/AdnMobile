@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +31,7 @@ public class RepositorioAlquilerImpl implements RepositorioAlquiler {
     private static final String ALQUILER_DEVUELTO = "Vehiculo devuelto";
     private static final String SERVIDOR_APAGADO = "Fallo de conexion con el servidor";
 
+    @Inject
     public RepositorioAlquilerImpl() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlServicio.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())

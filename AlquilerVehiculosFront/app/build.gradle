@@ -63,4 +63,15 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
         exclude group: 'com.android.support', module: 'design'
     }
+
+    //dagger 2
+    implementation 'com.google.dagger:dagger:2.14.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
+
+    //to enable DaggerActivity, DaggerBroadcastReceiver, DaggerFragment etc classes
+    implementation 'com.google.dagger:dagger-android:2.15'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.14.1'
+
+    //support libraries with dagger 2
+    implementation 'com.google.dagger:dagger-android-support:2.14.1'
 }

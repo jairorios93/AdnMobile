@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +31,7 @@ public class RepositorioVehiculoImpl implements RepositorioVehiculo {
     private static final String VEHICULO_REGISTRADO = "Vehiculo registrado";
     private static final String SERVIDOR_APAGADO = "Fallo de conexion con el servidor";
 
+    @Inject
     public RepositorioVehiculoImpl() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlServicio.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())

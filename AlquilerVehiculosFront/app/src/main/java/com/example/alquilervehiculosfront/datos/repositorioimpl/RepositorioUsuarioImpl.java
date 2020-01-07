@@ -1,5 +1,7 @@
 package com.example.alquilervehiculosfront.datos.repositorioimpl;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
@@ -16,6 +18,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +33,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     private static final String USUARIO_REGISTRADO = "Usuario registrado";
     private static final String SERVIDOR_APAGADO = "Fallo de conexion con el servidor";
 
+    @Inject
     public RepositorioUsuarioImpl() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlServicio.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -63,6 +68,7 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public MutableLiveData<RespuestaServicioGet> buscar(Long cedula) {
+        Log.e("---", cedula+"");
         final MutableLiveData<RespuestaServicioGet> resultado = new MutableLiveData<>();
         llamadoUsuarioRest.buscar(cedula).enqueue(new Callback<UsuarioDTO>() {
             @Override

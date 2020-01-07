@@ -13,7 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.presentacion.context.App;
+import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioUsuario;
 import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarAlquilerFragment;
 import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarUsuarioFragment;
 import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarVehiculoFragment;
@@ -21,7 +21,12 @@ import com.example.alquilervehiculosfront.presentacion.fragmentos.PrincipalFragm
 import com.example.alquilervehiculosfront.presentacion.fragmentosutil.EtiquetasFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    @Inject
+    public RepositorioUsuario repositorioUsuario;
 
     private FragmentManager fragmentManager;
     private Toolbar toolbar;
@@ -46,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment(), "PrincipalFragment").commit();
         getSupportActionBar().setTitle(getResources().getString(R.string.menu_principal));
-
-        App.setmContext(this);
     }
 
     @Override
