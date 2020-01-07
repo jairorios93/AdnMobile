@@ -16,14 +16,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
-import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
-import com.example.alquilervehiculosfront.dominio.modelo.AlquilarVehiculo;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
 import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioAlquilerDominio;
+import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarAlquilerViewModel;
+import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarUsuarioViewModel;
+import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarVehiculoViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +51,10 @@ public class AdministrarAlquilerFragment extends Fragment {
     private Usuario usuario;
     private Vehiculo vehiculo;
 
-    private ServicioAlquilerDominio servicioAlquiler;
+    private AdministrarAlquilerViewModel administrarAlquilerViewModel;
+    private AdministrarUsuarioViewModel administrarUsuarioViewModel;
+    private AdministrarVehiculoViewModel administrarVehiculoViewModel;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +70,9 @@ public class AdministrarAlquilerFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioAlquiler = new ServicioAlquilerDominio();
+        administrarAlquilerViewModel = ViewModelProviders.of(this).get(AdministrarAlquilerViewModel.class);
+        administrarUsuarioViewModel = ViewModelProviders.of(this).get(AdministrarUsuarioViewModel.class);
+        administrarVehiculoViewModel = ViewModelProviders.of(this).get(AdministrarVehiculoViewModel.class);
 
         buscarUsuario();
         buscarVehiculo();
@@ -129,7 +137,18 @@ public class AdministrarAlquilerFragment extends Fragment {
 
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
-                    servicioAlquiler.buscar(cedulaUsuario);
+                    administrarUsuarioViewModel.buscar(cedulaUsuario);
+                    administrarUsuarioViewModel.getResultadoGet().observe(AdministrarAlquilerFragment.this, new Observer<RespuestaServicioGet>() {
+                        @Override
+                        public void onChanged(RespuestaServicioGet response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoBuscar((Usuario) response.getObjeto());
+                            } else {
+                                mensajeError(getResources().getString(R.string.fragment_administrar_usuario_no_encontrado));
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -148,7 +167,18 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    servicioAlquiler.buscar(placaVehiculo);
+                    administrarVehiculoViewModel.buscar(placaVehiculo);
+                    administrarVehiculoViewModel.getResultadoGet().observe(AdministrarAlquilerFragment.this, new Observer<RespuestaServicioGet>() {
+                        @Override
+                        public void onChanged(RespuestaServicioGet response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoBuscar((Vehiculo) response.getObjeto());
+                            } else {
+                                mensajeError(getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado));
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -173,9 +203,19 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.show();
 
                     double valorAlquiler = Double.parseDouble(valor.getText().toString());
-                    AlquilarVehiculo alquilarVehiculo = new AlquilarVehiculo(usuario, vehiculo, fechaInicioAlquiler, fechaFinAlquiler, true, valorAlquiler);
 
-                    servicioAlquiler.alquilar(alquilarVehiculo);
+                    administrarAlquilerViewModel.alquilar(usuario, vehiculo, fechaInicioAlquiler, fechaFinAlquiler, true, valorAlquiler);
+                    administrarAlquilerViewModel.getResultadoPost().observe(AdministrarAlquilerFragment.this, new Observer<RespuestaServicioPost>() {
+                        @Override
+                        public void onChanged(RespuestaServicioPost response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoAlquilar();
+                            } else {
+                                mensajeError(response.getMensaje());
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -193,7 +233,18 @@ public class AdministrarAlquilerFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.fragment_administrar_alquiler_devolviendo));
                     progressDialog.show();
 
-                    servicioAlquiler.devolver(placaVehiculo);
+                    administrarAlquilerViewModel.devolver(placaVehiculo);
+                    administrarAlquilerViewModel.getResultadoGet().observe(AdministrarAlquilerFragment.this, new Observer<RespuestaServicioGet>() {
+                        @Override
+                        public void onChanged(RespuestaServicioGet response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoDevolver();
+                            } else {
+                                mensajeError((String) response.getObjeto());
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -281,32 +332,30 @@ public class AdministrarAlquilerFragment extends Fragment {
         alertDialog.show();
     }
 
-    public void dismissDialog() {
+    private void dismissDialog() {
         progressDialog.dismiss();
     }
 
-    public void resultadoBuscar(UsuarioDTO usuarioDTO) {
-        usuario = new Usuario(usuarioDTO.getCedula(), usuarioDTO.getNombres(),
-                usuarioDTO.getApellidos(), usuarioDTO.getFechaNacimiento());
+    private void resultadoBuscar(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public void resultadoBuscar(VehiculoDTO vehiculoDTO) {
-        vehiculo = new Vehiculo(vehiculoDTO.getPlaca(), vehiculoDTO.getModelo(),
-                vehiculoDTO.getMarca(), vehiculoDTO.getColor(), vehiculoDTO.getPrecio());
-        valor.setText(String.valueOf(vehiculo.getPrecio()));
+    private void resultadoBuscar(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
+        valor.setText(String.valueOf(this.vehiculo.getPrecio()));
     }
 
-    public void resultadoAlquilar() {
+    private void resultadoAlquilar() {
         limpiarCamposPantalla();
         Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_alquilado), Toast.LENGTH_SHORT).show();
     }
 
-    public void resultadoDevolver() {
+    private void resultadoDevolver() {
         limpiarCamposPantalla();
         Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_alquiler_devuelto), Toast.LENGTH_SHORT).show();
     }
 
-    public void mensajeError(String mensaje) {
+    private void mensajeError(String mensaje) {
         Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 }

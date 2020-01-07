@@ -21,16 +21,16 @@ public class AdministrarUsuarioViewModel extends ViewModel {
         mutableLiveDataPost = servicioUsuarioDominio.registrar(usuario);
     }
 
-    public void buscar(Long cedulaUsuario){
+    public void buscar(Long cedulaUsuario) {
         servicioUsuarioDominio = new ServicioUsuarioDominio();
         mutableLiveDataGet = servicioUsuarioDominio.buscar(cedulaUsuario);
     }
 
-    public LiveData<RespuestaServicioPost> getResultPost() {
+    public LiveData<RespuestaServicioPost> getResultadoPost() {
         return mutableLiveDataPost;
     }
 
-    public LiveData<RespuestaServicioGet> getResultGet() {
+    public LiveData<RespuestaServicioGet> getResultadoGet() {
         return mutableLiveDataGet;
     }
 }

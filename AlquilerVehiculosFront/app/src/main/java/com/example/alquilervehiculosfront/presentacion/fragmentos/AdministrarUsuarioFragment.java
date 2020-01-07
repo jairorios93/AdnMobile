@@ -114,7 +114,7 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
                     administrarUsuarioViewModel.registrar(cedulaUsuario, nombresUsuario, apellidosUsuario, fechaNacimientoUsuario);
-                    administrarUsuarioViewModel.getResultPost().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioPost>() {
+                    administrarUsuarioViewModel.getResultadoPost().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioPost>() {
                         @Override
                         public void onChanged(RespuestaServicioPost response) {
                             dismissDialog();
@@ -161,8 +161,7 @@ public class AdministrarUsuarioFragment extends Fragment {
                     Long cedulaUsuario = Long.valueOf(cedula.getText().toString());
 
                     administrarUsuarioViewModel.buscar(cedulaUsuario);
-
-                    administrarUsuarioViewModel.getResultGet().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioGet>() {
+                    administrarUsuarioViewModel.getResultadoGet().observe(AdministrarUsuarioFragment.this, new Observer<RespuestaServicioGet>() {
                         @Override
                         public void onChanged(RespuestaServicioGet response) {
                             dismissDialog();
@@ -202,7 +201,6 @@ public class AdministrarUsuarioFragment extends Fragment {
         datePickerDialog.updateDate(fechaHoy.get(Calendar.YEAR), fechaHoy.get(Calendar.MONTH), fechaHoy.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
-
 
     private void limpiarCamposPantalla() {
         cedula.setText("");

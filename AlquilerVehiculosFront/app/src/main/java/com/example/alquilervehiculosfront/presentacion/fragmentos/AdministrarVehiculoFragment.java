@@ -14,11 +14,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.alquilervehiculosfront.R;
-import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
+import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
-import com.example.alquilervehiculosfront.dominio.servicios.ServicioVehiculoDominio;
+import com.example.alquilervehiculosfront.presentacion.viewmodel.AdministrarVehiculoViewModel;
 
 public class AdministrarVehiculoFragment extends Fragment {
 
@@ -32,7 +35,7 @@ public class AdministrarVehiculoFragment extends Fragment {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder alertDialog;
 
-    private ServicioVehiculoDominio servicioVehiculo;
+    private AdministrarVehiculoViewModel administrarVehiculoViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +51,7 @@ public class AdministrarVehiculoFragment extends Fragment {
         findElementViewById(view);
         iniciarComponentes();
 
-        servicioVehiculo = new ServicioVehiculoDominio();
+        administrarVehiculoViewModel = ViewModelProviders.of(this).get(AdministrarVehiculoViewModel.class);
 
         registrar();
         buscar();
@@ -101,9 +104,18 @@ public class AdministrarVehiculoFragment extends Fragment {
 
                     double precioVehiculo = Double.parseDouble(precio.getText().toString());
 
-                    Vehiculo vehiculo = new Vehiculo(placaVehiculo, modeloVehiculo, marcaVehiculo, colorVehiculo, precioVehiculo);
-
-                    servicioVehiculo.registrar(vehiculo);
+                    administrarVehiculoViewModel.registrar(placaVehiculo, modeloVehiculo, marcaVehiculo, colorVehiculo, precioVehiculo);
+                    administrarVehiculoViewModel.getResultadoPost().observe(AdministrarVehiculoFragment.this, new Observer<RespuestaServicioPost>() {
+                        @Override
+                        public void onChanged(RespuestaServicioPost response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoRegistrar();
+                            } else {
+                                mensajeError(response.getMensaje());
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -125,7 +137,18 @@ public class AdministrarVehiculoFragment extends Fragment {
                     progressDialog.setMessage(getResources().getString(R.string.mensajes_generales_buscando));
                     progressDialog.show();
 
-                    servicioVehiculo.buscar(placaVehiculo);
+                    administrarVehiculoViewModel.buscar(placaVehiculo);
+                    administrarVehiculoViewModel.getResultadoGet().observe(AdministrarVehiculoFragment.this, new Observer<RespuestaServicioGet>() {
+                        @Override
+                        public void onChanged(RespuestaServicioGet response) {
+                            dismissDialog();
+                            if (response.isEstado()) {
+                                resultadoBuscar((Vehiculo) response.getObjeto());
+                            } else {
+                                mensajeError(getResources().getString(R.string.fragment_administrar_vehiculo_no_encontrado));
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -139,23 +162,23 @@ public class AdministrarVehiculoFragment extends Fragment {
         precio.setText("");
     }
 
-    public void dismissDialog() {
+    private void dismissDialog() {
         progressDialog.dismiss();
     }
 
-    public void resultadoRegistrar() {
+    private void resultadoRegistrar() {
         limpiarCamposPantalla();
         Toast.makeText(getContext(), getResources().getString(R.string.fragment_administrar_vehiculo_registrado), Toast.LENGTH_LONG).show();
     }
 
-    public void resultadoBuscar(VehiculoDTO vehiculoDTO) {
-        modelo.setText(vehiculoDTO.getModelo());
-        marca.setText(vehiculoDTO.getMarca());
-        color.setText(vehiculoDTO.getColor());
-        precio.setText(String.valueOf(vehiculoDTO.getPrecio()));
+    private void resultadoBuscar(Vehiculo vehiculo) {
+        modelo.setText(vehiculo.getModelo());
+        marca.setText(vehiculo.getMarca());
+        color.setText(vehiculo.getColor());
+        precio.setText(String.valueOf(vehiculo.getPrecio()));
     }
 
-    public void mensajeError(String mensaje) {
+    private void mensajeError(String mensaje) {
         Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
     }
 }

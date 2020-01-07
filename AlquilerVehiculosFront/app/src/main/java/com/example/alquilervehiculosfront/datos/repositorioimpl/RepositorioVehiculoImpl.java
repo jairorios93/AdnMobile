@@ -2,14 +2,14 @@ package com.example.alquilervehiculosfront.datos.repositorioimpl;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
+import com.example.alquilervehiculosfront.datos.dto.VehiculoDTO;
+import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoVehiculoRest;
 import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
 import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
 import com.example.alquilervehiculosfront.datos.restutil.UrlServicio;
 import com.example.alquilervehiculosfront.datos.restutil.CodigoEstadoRespuesta;
-import com.example.alquilervehiculosfront.datos.llamadorest.LlamadoUsuarioRest;
-import com.example.alquilervehiculosfront.dominio.modelo.Usuario;
-import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioUsuario;
+import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
+import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioVehiculo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,29 +23,29 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RepositorioUsuarioImpl implements RepositorioUsuario {
+public class RepositorioVehiculoImpl implements RepositorioVehiculo {
 
-    private LlamadoUsuarioRest llamadoUsuarioRest;
-    private static final String USUARIO_REGISTRADO = "Usuario registrado";
+    private LlamadoVehiculoRest llamadoVehiculoRest;
+    private static final String VEHICULO_REGISTRADO = "Vehiculo registrado";
     private static final String SERVIDOR_APAGADO = "Fallo de conexion con el servidor";
 
-    public RepositorioUsuarioImpl() {
+    public RepositorioVehiculoImpl() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(UrlServicio.URL_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        llamadoUsuarioRest = retrofit.create(LlamadoUsuarioRest.class);
+        llamadoVehiculoRest = retrofit.create(LlamadoVehiculoRest.class);
     }
 
     @Override
-    public MutableLiveData<RespuestaServicioPost> registrar(Usuario usuario) {
+    public MutableLiveData<RespuestaServicioPost> registrar(Vehiculo vehiculo) {
         final MutableLiveData<RespuestaServicioPost> resultado = new MutableLiveData<>();
-        llamadoUsuarioRest.registrar(usuario).enqueue(new Callback<Void>() {
+        llamadoVehiculoRest.registrar(vehiculo).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 RespuestaServicioPost respuestaServicioPost;
                 if (response.code() == CodigoEstadoRespuesta.OK) {
-                    respuestaServicioPost = new RespuestaServicioPost(USUARIO_REGISTRADO, response.code(), true);
+                    respuestaServicioPost = new RespuestaServicioPost(VEHICULO_REGISTRADO, response.code(), true);
                 } else {
                     respuestaServicioPost = new RespuestaServicioPost(errorRespuesta(response.errorBody()), response.code(), false);
                 }
@@ -62,21 +62,21 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     }
 
     @Override
-    public MutableLiveData<RespuestaServicioGet> buscar(Long cedula) {
+    public MutableLiveData<RespuestaServicioGet> buscar(String placaVehiculo) {
         final MutableLiveData<RespuestaServicioGet> resultado = new MutableLiveData<>();
-        llamadoUsuarioRest.buscar(cedula).enqueue(new Callback<UsuarioDTO>() {
+        llamadoVehiculoRest.buscar(placaVehiculo).enqueue(new Callback<VehiculoDTO>() {
             @Override
-            public void onResponse(Call<UsuarioDTO> call, Response<UsuarioDTO> response) {
+            public void onResponse(Call<VehiculoDTO> call, Response<VehiculoDTO> response) {
                 if (response.body() != null) {
-                    Usuario usuario = new Usuario(response.body().getCedula(), response.body().getNombres(),
-                            response.body().getApellidos(), response.body().getFechaNacimiento());
-                    RespuestaServicioGet respuestaServicioGet = new RespuestaServicioGet(usuario, response.code(), true);
+                    Vehiculo vehiculo = new Vehiculo(response.body().getPlaca(), response.body().getModelo(),
+                            response.body().getMarca(), response.body().getColor(), response.body().getPrecio());
+                    RespuestaServicioGet respuestaServicioGet = new RespuestaServicioGet(vehiculo, response.code(), true);
                     resultado.setValue(respuestaServicioGet);
                 }
             }
 
             @Override
-            public void onFailure(Call<UsuarioDTO> call, Throwable t) {
+            public void onFailure(Call<VehiculoDTO> call, Throwable t) {
                 RespuestaServicioGet respuestaServicioGet = new RespuestaServicioGet(null, CodigoEstadoRespuesta.ERROR, false);
                 resultado.setValue(respuestaServicioGet);
             }

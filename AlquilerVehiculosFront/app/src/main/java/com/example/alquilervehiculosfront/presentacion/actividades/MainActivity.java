@@ -18,7 +18,7 @@ import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarAlq
 import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarUsuarioFragment;
 import com.example.alquilervehiculosfront.presentacion.fragmentos.AdministrarVehiculoFragment;
 import com.example.alquilervehiculosfront.presentacion.fragmentos.PrincipalFragment;
-import com.example.alquilervehiculosfront.presentacion.fragmentosutil.FragmentTags;
+import com.example.alquilervehiculosfront.presentacion.fragmentosutil.EtiquetasFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -81,22 +81,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_menu_principal:
-                fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment(), FragmentTags.PRINCIPAL_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new PrincipalFragment(), EtiquetasFragment.PRINCIPAL_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.menu_principal));
                 break;
 
             case R.id.nav_administrar_vehiculos:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarVehiculoFragment(), FragmentTags.ADMINISTRAR_VEHICULO_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarVehiculoFragment(), EtiquetasFragment.ADMINISTRAR_VEHICULO_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_vehiculos));
                 break;
 
             case R.id.nav_administrar_usuarios:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarUsuarioFragment(), FragmentTags.ADMINISTRAR_USUARIO_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarUsuarioFragment(), EtiquetasFragment.ADMINISTRAR_USUARIO_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_usuarios));
                 break;
 
             case R.id.nav_administrar_alquileres:
-                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarAlquilerFragment(), FragmentTags.ADMINISTRAR_ALQUILER_FRAGMENT).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, new AdministrarAlquilerFragment(), EtiquetasFragment.ADMINISTRAR_ALQUILER_FRAGMENT).commit();
                 getSupportActionBar().setTitle(getResources().getString(R.string.administrar_alquileres));
                 break;
         }

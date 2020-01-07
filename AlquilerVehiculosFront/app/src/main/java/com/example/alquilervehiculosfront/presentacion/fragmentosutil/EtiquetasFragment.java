@@ -1,6 +1,6 @@
 package com.example.alquilervehiculosfront.presentacion.fragmentosutil;
 
-public class FragmentTags {
+public class EtiquetasFragment {
 
     public static final String PRINCIPAL_FRAGMENT = "PrincipalFragment";
     public static final String ADMINISTRAR_VEHICULO_FRAGMENT = "AdministrarVehiculoFragment";
