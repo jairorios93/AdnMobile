@@ -52,7 +52,14 @@ pipeline {
                     sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
                 }       
             }     
-        }  
+        }
+
+		stage('Build') {
+			steps { 
+				sh 'gradle --b ./AlquilerVehiculos/build.gradle build -x test'
+			}     
+		}
+	 
     } 
 
     post { 
