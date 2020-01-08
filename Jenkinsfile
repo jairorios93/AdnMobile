@@ -33,8 +33,8 @@ pipeline {
 		stage('Unit Tests backend') { 
 			steps{
 				dir ('AlquilerVehiculos/'){
-					sh './gradle --b build.gradle test --scan'
-					sh './gradle --b build.gradle jacocoTestReport'    
+					sh './gradlew --b build.gradle test --scan'
+					sh './gradlew --b build.gradle jacocoTestReport'    
 				}
 			}
 		}
@@ -58,7 +58,7 @@ pipeline {
 		stage('Build') {
 			steps { 
 				dir ('AlquilerVehiculos/'){
-					sh './gradle --b build.gradle build -x test'
+					sh './gradlew --b build.gradle build -x test'
 				}     
 			}
 		}
