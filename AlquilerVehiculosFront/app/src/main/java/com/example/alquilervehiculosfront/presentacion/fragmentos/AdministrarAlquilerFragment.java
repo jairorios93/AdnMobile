@@ -304,13 +304,12 @@ public class AdministrarAlquilerFragment extends Fragment {
         Calendar fechaHoy = new GregorianCalendar();
         datePickerDialog.updateDate(fechaHoy.get(Calendar.YEAR), fechaHoy.get(Calendar.MONTH), fechaHoy.get(Calendar.DAY_OF_MONTH));
         if (!fechaInicio.getText().toString().equals("")) {
-            Date date = null;
             try {
-                date = new SimpleDateFormat("yyyy-MM-dd").parse(fechaInicio.getText().toString());
+                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(fechaInicio.getText().toString());
+                datePickerDialog.getDatePicker().setMinDate(date.getTime());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            datePickerDialog.getDatePicker().setMinDate(date.getTime());
         }
         datePickerDialog.show();
     }
