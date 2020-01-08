@@ -10,35 +10,35 @@ public class UsuarioDTO {
 
     private String fechaNacimiento;
 
-    public Long getCedula() {
-        return cedula;
-    }
-
     public void setCedula(Long cedula) {
         this.cedula = cedula;
     }
 
-    public String getNombres() {
-        return nombres;
+    public Long getCedula() {
+        return cedula;
     }
 
     public void setNombres(String nombres) {
         this.nombres = nombres;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public String getNombres() {
+        return nombres;
     }
 
     public void setApellidos(String apellidos) {
         this.apellidos = apellidos;
     }
 
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
+    public String getApellidos() {
+        return apellidos;
     }
 
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
     }
 }
