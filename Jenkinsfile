@@ -29,6 +29,13 @@ pipeline {
                 }
             }
         }
+		
+		stage('Unit Tests backend') { 
+			steps{     
+				sh 'gradle --b ./AlquilerVehiculos/build.gradle test --scan'
+				sh 'gradle --b ./AlquilerVehiculos/build.gradle jacocoTestReport'   
+			}
+		}
         
         stage('Build frontend') { 
             steps{     
