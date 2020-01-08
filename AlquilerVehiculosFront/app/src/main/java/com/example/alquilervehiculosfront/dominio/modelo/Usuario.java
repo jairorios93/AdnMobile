@@ -17,19 +17,19 @@ public class Usuario {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public Long getCedula() {
-        return cedula;
-    }
-
-    public String getNombres() {
-        return nombres;
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
     public String getApellidos() {
         return apellidos;
     }
 
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
+    public Long getCedula() {
+        return cedula;
+    }
+
+    public String getNombres() {
+        return nombres;
     }
 }
