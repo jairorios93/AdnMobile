@@ -33,8 +33,8 @@ pipeline {
 		stage('Unit Tests backend') { 
 			steps{
 				dir ('AlquilerVehiculos/'){
-					sh './gradlew test --scan'
-					sh './gradlew jacocoTestReport'   
+					sh 'gradle --b ./AlquilerVehiculos/build.gradle test --scan'
+					sh 'gradle --b ./AlquilerVehiculos/build.gradle jacocoTestReport'    
 				}
 			}
 		}
@@ -49,7 +49,6 @@ pipeline {
 
         stage('Static Code Analysis') {   
             steps{    
-                echo '----------------->Analisis de Código estático<-----------------'
                 withSonarQubeEnv('Sonar'){
                     sh "${tool name: 'SonarScanner', type:'hudson.plugins.sonar.SonarRunnerInstallation'}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
                 }       
@@ -59,7 +58,7 @@ pipeline {
 		stage('Build') {
 			steps { 
 				dir ('AlquilerVehiculos/'){
-					sh './gradlew build -x test'
+					sh 'gradle --b ./AlquilerVehiculos/build.gradle build -x test'
 				}     
 			}
 		}
