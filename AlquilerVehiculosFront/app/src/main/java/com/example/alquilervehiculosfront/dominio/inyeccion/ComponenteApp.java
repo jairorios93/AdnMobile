@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.datos.configuracion;
+package com.example.alquilervehiculosfront.dominio.inyeccion;
 
 import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioAlquiler;
 import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioUsuario;
@@ -6,15 +6,14 @@ import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioVehicul
 import com.example.alquilervehiculosfront.dominio.servicios.ServicioAlquilerDominio;
 import com.example.alquilervehiculosfront.dominio.servicios.ServicioUsuarioDominio;
 import com.example.alquilervehiculosfront.dominio.servicios.ServicioVehiculoDominio;
-import com.example.alquilervehiculosfront.presentacion.actividades.MainActivity;
 
 import dagger.Component;
 
 @Component(
         modules = {
-                AppModule.class, ConfiguracionModulos.class
+                ModuloApp.class, ConfiguracionModulos.class
         })
-public interface AppComponent {
+public interface ComponenteApp {
 
     void inject(ServicioUsuarioDominio servicioUsuarioDominio);
 

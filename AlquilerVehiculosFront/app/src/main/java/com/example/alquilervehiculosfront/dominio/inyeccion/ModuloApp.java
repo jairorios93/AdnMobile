@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.datos.configuracion;
+package com.example.alquilervehiculosfront.dominio.inyeccion;
 
 import android.content.Context;
 
@@ -7,11 +7,11 @@ import dagger.Provides;
 import dagger.android.DaggerApplication;
 
 @Module
-public class AppModule {
+public class ModuloApp {
 
-    DaggerApplication application;
+    public DaggerApplication application;
 
-    public AppModule(DaggerApplication application) {
+    public ModuloApp(DaggerApplication application) {
         this.application = application;
     }
 

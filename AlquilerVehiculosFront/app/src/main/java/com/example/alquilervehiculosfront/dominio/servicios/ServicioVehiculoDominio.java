@@ -2,10 +2,10 @@ package com.example.alquilervehiculosfront.dominio.servicios;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.alquilervehiculosfront.datos.configuracion.AppComponent;
-import com.example.alquilervehiculosfront.datos.configuracion.DaggerAppComponent;
 import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioGet;
 import com.example.alquilervehiculosfront.datos.respuesta.RespuestaServicioPost;
+import com.example.alquilervehiculosfront.dominio.inyeccion.ComponenteApp;
+import com.example.alquilervehiculosfront.dominio.inyeccion.DaggerComponenteApp;
 import com.example.alquilervehiculosfront.dominio.modelo.Vehiculo;
 import com.example.alquilervehiculosfront.dominio.repositorio.RepositorioVehiculo;
 
@@ -17,8 +17,8 @@ public class ServicioVehiculoDominio {
     public RepositorioVehiculo repositorioVehiculo;
 
     public ServicioVehiculoDominio() {
-        AppComponent appComponent = DaggerAppComponent.builder().build();
-        appComponent.inject(this);
+        ComponenteApp componenteApp = DaggerComponenteApp.builder().build();
+        componenteApp.inject(this);
     }
 
     public MutableLiveData<RespuestaServicioPost> registrar(Vehiculo vehiculo) {

@@ -1,4 +1,4 @@
-package com.example.alquilervehiculosfront.datos.configuracion;
+package com.example.alquilervehiculosfront.dominio.inyeccion;
 
 import com.example.alquilervehiculosfront.datos.repositorioimpl.RepositorioAlquilerImpl;
 import com.example.alquilervehiculosfront.datos.repositorioimpl.RepositorioUsuarioImpl;

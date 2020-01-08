@@ -48,7 +48,7 @@ public class RepositorioAlquilerImpl implements RepositorioAlquiler {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 RespuestaServicioPost respuestaServicioPost;
                 if (response.code() == CodigoEstadoRespuesta.OK) {
-                    respuestaServicioPost = new RespuestaServicioPost(ALQUILER_DEVUELTO, response.code(), true);
+                    respuestaServicioPost = new RespuestaServicioPost(ALQUILER_REGISTRADO, response.code(), true);
                 } else {
                     respuestaServicioPost = new RespuestaServicioPost(errorRespuesta(response.errorBody()), response.code(), false);
                 }
@@ -72,7 +72,7 @@ public class RepositorioAlquilerImpl implements RepositorioAlquiler {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 RespuestaServicioGet respuestaServicioGet;
                 if (response.code() == CodigoEstadoRespuesta.OK) {
-                    respuestaServicioGet = new RespuestaServicioGet(ALQUILER_REGISTRADO, response.code(), true);
+                    respuestaServicioGet = new RespuestaServicioGet(ALQUILER_DEVUELTO, response.code(), true);
                 } else {
                     respuestaServicioGet = new RespuestaServicioGet(errorRespuesta(response.errorBody()), response.code(), false);
                 }

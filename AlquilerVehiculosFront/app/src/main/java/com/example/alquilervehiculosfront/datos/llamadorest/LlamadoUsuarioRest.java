@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 public interface LlamadoUsuarioRest {
 
     @POST("usuario")
-    Call<Void> registrar(@Body Usuario vehiculo);
+    Call<Void> registrar(@Body Usuario usuario);
 
     @GET("usuario/{CEDULA}")
     Call<UsuarioDTO> buscar(@Path("CEDULA") Long cedula);

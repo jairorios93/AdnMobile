@@ -1,7 +1,5 @@
 package com.example.alquilervehiculosfront.datos.repositorioimpl;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.alquilervehiculosfront.datos.dto.UsuarioDTO;
@@ -68,7 +66,6 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public MutableLiveData<RespuestaServicioGet> buscar(Long cedula) {
-        Log.e("---", cedula+"");
         final MutableLiveData<RespuestaServicioGet> resultado = new MutableLiveData<>();
         llamadoUsuarioRest.buscar(cedula).enqueue(new Callback<UsuarioDTO>() {
             @Override

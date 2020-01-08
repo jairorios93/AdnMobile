@@ -12,8 +12,4 @@ public class RespuestaServicioGet extends RespuestaServicio {
     public Object getObjeto() {
         return objeto;
     }
-
-    public void setObjeto(Object objeto) {
-        this.objeto = objeto;
-    }
 }
