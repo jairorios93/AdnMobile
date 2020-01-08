@@ -31,9 +31,11 @@ pipeline {
         }
 		
 		stage('Unit Tests backend') { 
-			steps{     
-				sh './gradlew test --scan'
-				sh './gradlew jacocoTestReport'   
+			steps{
+				dir ('AlquilerVehiculos/'){
+					sh './gradlew test --scan'
+					sh './gradlew jacocoTestReport'   
+				}
 			}
 		}
         
@@ -56,8 +58,10 @@ pipeline {
 
 		stage('Build') {
 			steps { 
-				sh './gradlew build -x test'
-			}     
+				dir ('AlquilerVehiculos/'){
+					sh './gradlew build -x test'
+				}     
+			}
 		}
 	 
     } 
