@@ -44,9 +44,12 @@ dependencies {
 	}
 }
 
+jacocoTestReport {reports {xml.enabled true}
+
 test {
 	useJUnitPlatform()
 	dependsOn 'cleanTest'
+	finalizedBy jacocoTestReport
 }
 
 sonarqube {
