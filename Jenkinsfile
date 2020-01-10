@@ -43,6 +43,7 @@ pipeline {
 			steps{
 				dir ('AlquilerVehiculosFront/'){
 					sh './gradlew clean test'
+					sh './gradlew createDebugCoverageReport'
 				}
 			}
 		}
