@@ -21,7 +21,7 @@ public class AdministrarUsuarioTest {
         pageObject = new PageObject();
     }
 
-    @Test
+  //  @Test
     public void registrar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);
@@ -40,7 +40,7 @@ public class AdministrarUsuarioTest {
         pageObject.matchToast(R.string.fragment_administrar_usuario_registrado);
     }
 
-    @Test
+    //@Test
     public void buscar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);
