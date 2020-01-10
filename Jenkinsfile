@@ -39,6 +39,14 @@ pipeline {
 			}
 		}
         
+		stage('Unit Tests frontend') { 
+			steps{
+				dir ('AlquilerVehiculosFront/'){
+					sh './gradlew clean test'
+				}
+			}
+		}
+		
         stage('Build frontend') { 
             steps{     
                 dir ('AlquilerVehiculosFront/'){
