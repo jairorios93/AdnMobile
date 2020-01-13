@@ -39,6 +39,14 @@ pipeline {
 			}
 		}
         
+		stage('Build frontend') { 
+            steps{     
+                dir ('AlquilerVehiculosFront/'){
+                    sh './gradlew clean build'
+                }
+            } 
+        }
+		
 		stage('Unit Tests frontend') { 
 			steps{
 				dir ('AlquilerVehiculosFront/'){
@@ -47,14 +55,6 @@ pipeline {
 				}
 			}
 		}
-		
-        stage('Build frontend') { 
-            steps{     
-                dir ('AlquilerVehiculosFront/'){
-                    sh './gradlew clean build'
-                }
-            } 
-        }
 
         stage('Static Code Analysis') {   
             steps{    
@@ -63,15 +63,6 @@ pipeline {
                 }       
             }     
         }
-
-		stage('Build') {
-			steps { 
-				dir ('AlquilerVehiculos/'){
-					sh './gradlew --b build.gradle build -x test'
-				}     
-			}
-		}
-	 
     } 
 
     post { 
