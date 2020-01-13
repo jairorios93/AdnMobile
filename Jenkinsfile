@@ -54,8 +54,8 @@ pipeline {
 			steps{
 				echo "------------>Unit Tests frontend<------------" 
 				dir ('AlquilerVehiculosFront/'){
-					sh './gradlew clean test'
-					sh './gradlew createDebugCoverageReport'
+					sh './gradlew --b build.gradle test --scan'
+					sh './gradlew --b build.gradle jacocoTestReport'
 				}
 			}
 		}
