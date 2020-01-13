@@ -21,7 +21,7 @@ public class AdministrarUsuarioTest {
         pageObject = new PageObject();
     }
 
-  //  @Test
+    //@Test
     public void registrar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);

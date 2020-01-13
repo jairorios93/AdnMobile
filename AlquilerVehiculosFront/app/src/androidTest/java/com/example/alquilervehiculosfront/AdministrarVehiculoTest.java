@@ -21,7 +21,7 @@ public class AdministrarVehiculoTest {
         pageObject = new PageObject();
     }
 
-  //  @Test
+    //@Test
     public void registrar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);
@@ -41,7 +41,7 @@ public class AdministrarVehiculoTest {
         pageObject.matchToast(R.string.fragment_administrar_vehiculo_registrado);
     }
 
-  //  @Test
+    //@Test
     public void buscar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);

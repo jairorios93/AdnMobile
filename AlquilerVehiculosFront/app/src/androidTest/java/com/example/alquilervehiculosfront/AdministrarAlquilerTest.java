@@ -21,7 +21,7 @@ public class AdministrarAlquilerTest {
         pageObject = new PageObject();
     }
 
-  //  @Test
+    // @Test
     public void alquilar() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);
@@ -47,7 +47,7 @@ public class AdministrarAlquilerTest {
         pageObject.matchToast(R.string.fragment_administrar_alquiler_alquilado);
     }
 
-  //  @Test
+    // @Test
     public void devolver() throws InterruptedException {
         pageObject.abrirMenu();
         pageObject.sleep(1);
