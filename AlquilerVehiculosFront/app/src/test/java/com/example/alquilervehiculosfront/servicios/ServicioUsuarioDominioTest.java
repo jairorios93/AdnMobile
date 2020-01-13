@@ -39,31 +39,57 @@ public class ServicioUsuarioDominioTest {
     private ServicioUsuarioDominio servicioUsuarioDominio;
 
     @Test
-    public void registrar() {
+    public void registrarUsuarioCorrecto() {
+        //arrange
         Usuario usuario = new UsuarioDataBuilder().build();
+
         MutableLiveData<RespuestaServicioPost> respuestaRepositorioUsuario = new MutableLiveData<>();
         RespuestaServicioPost respuestaPost = new RespuestaServicioPostDataBuilder().build();
         respuestaRepositorioUsuario.setValue(respuestaPost);
 
         when(repositorioUsuario.registrar(usuario)).thenReturn(respuestaRepositorioUsuario);
 
+        //act
         MutableLiveData<RespuestaServicioPost> respuestaServicioUsuarioDominio = servicioUsuarioDominio.registrar(usuario);
 
-        assertEquals(respuestaRepositorioUsuario.getValue().getMensaje(), respuestaServicioUsuarioDominio.getValue().getMensaje());
+        //assert
+        assertEquals(respuestaRepositorioUsuario.getValue().getMensaje(),
+                respuestaServicioUsuarioDominio.getValue().getMensaje());
     }
 
     @Test
-    public void buscar() {
+    public void buscarUsuarioExistente() {
+        //arrange
         Usuario usuario = new UsuarioDataBuilder().build();
+
         MutableLiveData<RespuestaServicioGet> respuestaRepositorioUsuario = new MutableLiveData<>();
         RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build(usuario);
         respuestaRepositorioUsuario.setValue(respuestaPost);
 
         when(repositorioUsuario.buscar(usuario.getCedula())).thenReturn(respuestaRepositorioUsuario);
 
+        //act
         MutableLiveData<RespuestaServicioGet> respuestaServicioUsuarioDominio = servicioUsuarioDominio.buscar(usuario.getCedula());
 
+        //assert
         assertEquals(((Usuario) respuestaRepositorioUsuario.getValue().getObjeto()).getCedula(),
                 ((Usuario) respuestaServicioUsuarioDominio.getValue().getObjeto()).getCedula());
+    }
+
+    @Test
+    public void usuarioNoEncontrado() {
+        //arrange
+        MutableLiveData<RespuestaServicioGet> respuestaRepositorioUsuario = new MutableLiveData<>();
+        RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build(null);
+        respuestaRepositorioUsuario.setValue(respuestaPost);
+
+        Usuario usuario = new UsuarioDataBuilder().build();
+        when(repositorioUsuario.buscar(usuario.getCedula())).thenReturn(respuestaRepositorioUsuario);
+
+        //act
+        MutableLiveData<RespuestaServicioGet> respuestaServicioUsuarioDominio = servicioUsuarioDominio.buscar(usuario.getCedula());
+
+        //assert
+        assertNull(respuestaServicioUsuarioDominio.getValue().getObjeto());
     }
 }

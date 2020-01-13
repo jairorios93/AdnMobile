@@ -36,30 +36,58 @@ public class ServicioAlquilerDominioTest {
     private ServicioAlquilerDominio servicioAlquilerDominio;
 
     @Test
-    public void alquilar() {
+    public void alquilarVehiculoCorrecto() {
+        //arrange
         AlquilarVehiculo alquiler = new AlquilarVehiculoDataBuilder().build();
+
         MutableLiveData<RespuestaServicioPost> respuestaRepositorioAlquiler = new MutableLiveData<>();
         RespuestaServicioPost respuestaPost = new RespuestaServicioPostDataBuilder().build();
         respuestaRepositorioAlquiler.setValue(respuestaPost);
 
         when(repositorioAlquiler.alquilar(alquiler)).thenReturn(respuestaRepositorioAlquiler);
 
+        //act
         MutableLiveData<RespuestaServicioPost> respuestaServicioAlquilerDominio = servicioAlquilerDominio.alquilar(alquiler);
 
-        assertEquals(respuestaRepositorioAlquiler.getValue().getMensaje(), respuestaServicioAlquilerDominio.getValue().getMensaje());
+        //assert
+        assertEquals(respuestaRepositorioAlquiler.getValue().getMensaje(),
+                respuestaServicioAlquilerDominio.getValue().getMensaje());
     }
 
     @Test
-    public void devolver() {
+    public void devolverVehiculoCorrecto() {
+        //arrange
         AlquilarVehiculo alquiler = new AlquilarVehiculoDataBuilder().build();
+
         MutableLiveData<RespuestaServicioGet> respuestaRepositorioAlquiler = new MutableLiveData<>();
         RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build("Operacion exitosa");
         respuestaRepositorioAlquiler.setValue(respuestaPost);
 
         when(repositorioAlquiler.devolver(alquiler.getVehiculo().getPlaca())).thenReturn(respuestaRepositorioAlquiler);
 
+        //act
         MutableLiveData<RespuestaServicioGet> respuestaServicioAlquilerDominio = servicioAlquilerDominio.devolver(alquiler.getVehiculo().getPlaca());
 
+        //assert
+        assertEquals((respuestaRepositorioAlquiler.getValue().getObjeto()),
+                (respuestaServicioAlquilerDominio.getValue().getObjeto()));
+    }
+
+    @Test
+    public void devolverVehiculoIncorrecto() {
+        //arrange
+        AlquilarVehiculo alquiler = new AlquilarVehiculoDataBuilder().build();
+
+        MutableLiveData<RespuestaServicioGet> respuestaRepositorioAlquiler = new MutableLiveData<>();
+        RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build("Vehiculo no encontrado");
+        respuestaRepositorioAlquiler.setValue(respuestaPost);
+
+        when(repositorioAlquiler.devolver(alquiler.getVehiculo().getPlaca())).thenReturn(respuestaRepositorioAlquiler);
+
+        //act
+        MutableLiveData<RespuestaServicioGet> respuestaServicioAlquilerDominio = servicioAlquilerDominio.devolver(alquiler.getVehiculo().getPlaca());
+
+        //assert
         assertEquals((respuestaRepositorioAlquiler.getValue().getObjeto()),
                 (respuestaServicioAlquilerDominio.getValue().getObjeto()));
     }

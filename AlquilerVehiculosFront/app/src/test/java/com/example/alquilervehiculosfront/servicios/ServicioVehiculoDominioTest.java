@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -36,31 +37,57 @@ public class ServicioVehiculoDominioTest {
     private ServicioVehiculoDominio servicioVehiculoDominio;
 
     @Test
-    public void registrar() {
+    public void registrarVehiculoCorrecto() {
+        //arrange
         Vehiculo vehiculo = new VehiculoDataBuilder().build();
+
         MutableLiveData<RespuestaServicioPost> respuestaRepositorioVehiculo = new MutableLiveData<>();
         RespuestaServicioPost respuestaPost = new RespuestaServicioPostDataBuilder().build();
         respuestaRepositorioVehiculo.setValue(respuestaPost);
 
         when(repositorioVehiculo.registrar(vehiculo)).thenReturn(respuestaRepositorioVehiculo);
 
+        //act
         MutableLiveData<RespuestaServicioPost> respuestaServicioVehiculoDominio = servicioVehiculoDominio.registrar(vehiculo);
 
-        assertEquals(respuestaRepositorioVehiculo.getValue().getMensaje(), respuestaServicioVehiculoDominio.getValue().getMensaje());
+        //assert
+        assertEquals(respuestaRepositorioVehiculo.getValue().getMensaje(),
+                respuestaServicioVehiculoDominio.getValue().getMensaje());
     }
 
     @Test
-    public void buscar() {
+    public void buscarVehiculoExistente() {
+        //arrange
         Vehiculo vehiculo = new VehiculoDataBuilder().build();
+
         MutableLiveData<RespuestaServicioGet> respuestaRepositorioVehiculo = new MutableLiveData<>();
         RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build(vehiculo);
         respuestaRepositorioVehiculo.setValue(respuestaPost);
 
         when(repositorioVehiculo.buscar(vehiculo.getPlaca())).thenReturn(respuestaRepositorioVehiculo);
 
+        //act
         MutableLiveData<RespuestaServicioGet> respuestaServicioVehiculoDominio = servicioVehiculoDominio.buscar(vehiculo.getPlaca());
 
+        //assert
         assertEquals(((Vehiculo) respuestaRepositorioVehiculo.getValue().getObjeto()).getPlaca(),
                 ((Vehiculo) respuestaServicioVehiculoDominio.getValue().getObjeto()).getPlaca());
+    }
+
+    @Test
+    public void usuarioNoEncontrado() {
+        //arrange
+        MutableLiveData<RespuestaServicioGet> respuestaRepositorioVehiculo = new MutableLiveData<>();
+        RespuestaServicioGet respuestaPost = new RespuestaServicioGetDataBuilder().build(null);
+        respuestaRepositorioVehiculo.setValue(respuestaPost);
+
+        Vehiculo vehiculo = new VehiculoDataBuilder().build();
+        when(repositorioVehiculo.buscar(vehiculo.getPlaca())).thenReturn(respuestaRepositorioVehiculo);
+
+        //act
+        MutableLiveData<RespuestaServicioGet> respuestaServicioVehiculoDominio = servicioVehiculoDominio.buscar(vehiculo.getPlaca());
+
+        //assert
+        assertNull(respuestaServicioVehiculoDominio.getValue().getObjeto());
     }
 }
