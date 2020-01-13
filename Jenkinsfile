@@ -68,6 +68,16 @@ pipeline {
                 }       
             }     
         }
+
+		stage('Build') {
+			steps { 
+				echo "------------>Build<------------" 
+				dir ('AlquilerVehiculos/'){
+					sh './gradlew --b build.gradle build -x test'
+				}     
+			}
+		}
+	 
     } 
 
     post { 
